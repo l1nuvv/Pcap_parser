@@ -1,0 +1,10 @@
+^E:\CODE\C++\PCAP_PARSER\BUILD\_DEPS\GOOGLETEST-SUBBUILD\CMAKEFILES\7942FE053AEF8BD9872D45B368BF35D3\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SE:/Code/C++/Pcap_parser/build/_deps/googletest-subbuild -BE:/Code/C++/Pcap_parser/build/_deps/googletest-subbuild --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file E:/Code/C++/Pcap_parser/build/_deps/googletest-subbuild/googletest-populate.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
