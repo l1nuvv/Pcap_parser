@@ -41,10 +41,6 @@ cd build
 # Конфигурация и сборка
 cmake ..
 cmake --build .
-
-# Альтернативно для Release версии:
-cmake -DCMAKE_BUILD_TYPE=Release ..
-cmake --build . --config Release
 ```
 
 ## Использование
@@ -61,8 +57,6 @@ cmake --build . --config Release
 # Анализ локального файла
 ./Pcap_parser ../traffic.pcap
 ```
-
-
 
 ## Функционал
 

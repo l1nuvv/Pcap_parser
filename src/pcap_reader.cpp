@@ -13,18 +13,18 @@ bool PcapReader::open(const std::string &filename)
 {
     file.open(filename, std::ios::binary);
     if (!file.is_open()) {
-        std::cerr << "Error: Cannot open file in binary mode " << filename << std::endl;
+        std::cerr << "Error: не получается открыть файл в бинарном режиме " << filename << std::endl;
         return false;
     }
 
     file.read(reinterpret_cast<char *>(&global_header), sizeof(global_header));
     if (file.gcount() != sizeof(global_header)) {
-        std::cerr << "Error: File too small for pcap header" << std::endl;
+        std::cerr << "Error: файл слишком мал для pcap header" << std::endl;
         return false;
     }
 
     if (global_header.magic_number != 0xa1b2c3d4) {
-        std::cerr << "Error: Not a valid pcap file (wrong magic number)" << std::endl;
+        std::cerr << "Error: неправильное magic число(сигнатура)" << std::endl;
         return false;
     }
     return true;

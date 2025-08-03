@@ -28,22 +28,19 @@ int main(int argc, char *argv[])
     std::cout << "=== PCAP PARSER ===" << std::endl;
 
     if (argc != 2) {
-        std::cout << "\nUsage: " << argv[0] << " <pcap_file>" << std::endl;
-        std::cout << "Example: " << argv[0] << " traffic.pcap" << std::endl;
-        std::cout << "\nNote: Provide path to a valid .pcap file for analysis" << std::endl;
+        std::cout << "\nИспользуем: " << argv[0] << " <pcap_file>" << std::endl;
+        std::cout << "\nПодсказка: напишите путь до pcap файла" << std::endl;
         return 1;
     }
 
     const std::string pcap_file = argv[1];
-    //std::cout << "\nАнализ файла: " << pcap_file << std::endl;
-    ;
 
-    // Create pcap analyzer
+    // Создаем объект класса
     PcapReader reader;
 
     if (!reader.open(pcap_file)) {
-        std::cout << "ERROR: Failed to open or validate pcap file!" << std::endl;
-        std::cout << "Make sure the file exists and is a valid pcap format." << std::endl;
+        std::cout << "Error: не получается открыть pcap файл!" << std::endl;
+        std::cout << "Убедитесь, что файл существует и он .pcap" << std::endl;
         return 1;
     }
 
