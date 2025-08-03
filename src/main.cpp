@@ -25,7 +25,7 @@ bool create_directory(const std::string &path)
 int main(int argc, char *argv[])
 {
     setlocale(LC_ALL, "ru_RU.UTF-8");
-    std::cout << "=== PCAP ANALYZER ===" << std::endl;
+    std::cout << "=== PCAP PARSER ===" << std::endl;
 
     if (argc != 2) {
         std::cout << "\nUsage: " << argv[0] << " <pcap_file>" << std::endl;

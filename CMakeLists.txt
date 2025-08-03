@@ -73,7 +73,7 @@ if(BUILD_TESTS)
 
         add_executable(pcap_tests
                 tests/test_pcap_reader.cpp
-                src/pcap_reader.cpp  # Только один раз!
+                src/pcap_reader.cpp
         )
 
         # Подключение библиотек
@@ -83,7 +83,6 @@ if(BUILD_TESTS)
             target_link_libraries(pcap_tests gtest_main)
         endif()
 
-        # Заголовочные файлы для тестов
         target_include_directories(pcap_tests PRIVATE ${INCLUDE_DIR})
 
         # Регистрация тестов
