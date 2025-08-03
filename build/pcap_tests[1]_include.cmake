@@ -1,5 +1,0 @@
-if(EXISTS "E:/Code/C++/Pcap_parser/build/pcap_tests[1]_tests.cmake")
-  include("E:/Code/C++/Pcap_parser/build/pcap_tests[1]_tests.cmake")
-else()
-  add_test(pcap_tests_NOT_BUILT pcap_tests_NOT_BUILT)
-endif()

@@ -1,3 +1,0 @@
-E:/Code/C++/Pcap_parser/build/_deps/googletest-subbuild/CMakeFiles/googletest-populate.dir
-E:/Code/C++/Pcap_parser/build/_deps/googletest-subbuild/CMakeFiles/ALL_BUILD.dir
-E:/Code/C++/Pcap_parser/build/_deps/googletest-subbuild/CMakeFiles/ZERO_CHECK.dir
