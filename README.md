@@ -54,7 +54,7 @@ cmake --build .
 ### Примеры
 
 ```bash
-# Анализ локального файла
+# Парсер .pcap файла
 ./Pcap_parser ../traffic.pcap
 ```
 
