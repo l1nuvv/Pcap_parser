@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     reader.print_ipv4_packet_list();
     reader.print_ipv6_packet_list();
 
-    std::cout << "\n === СОЗДАНИЕ ВЫХОДНЫХ ФАЙЛОВ ===" << std::endl;
+    std::cout << "\n=== СОЗДАНИЕ ВЫХОДНЫХ ФАЙЛОВ ===" << std::endl;
 
     const std::string result_dir = "result";
     std::cout << "Попытка создания папки: " << result_dir << std::endl;

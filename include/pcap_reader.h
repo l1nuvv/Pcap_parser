@@ -19,9 +19,11 @@ private:
     static constexpr size_t IPV4_ETHERTYPE       = 0x0800;
     static constexpr size_t IPV6_ETHERTYPE       = 0x86DD;
 
-    std::ifstream file;
-    pcap_header_t global_header;
-    uint32_t      packet_count {0};
+    std::vector<uint8_t> buffer;
+    size_t               buffer_pos  = 0;
+    size_t               buffer_size = 0;
+    pcap_header_t        global_header;
+    uint32_t             packet_count {0};
 
     std::map<uint32_t, uint32_t> length_stats;
     std::map<MacPair, uint32_t>  mac_pair_stats;
@@ -35,15 +37,15 @@ private:
     std::string format_ipv4_adress(const uint8_t *addr) const;
     std::string format_ipv6_adress(const uint8_t *addr) const;
     void        analyze_ethernet_header(const uint8_t *ethernet_data);
-    void        process_single_packet(const pcaprec_header_t &packet_header);
+    void        process_single_packet(const pcaprec_header_t &packet_header, const uint8_t* packet_data);
     void        print_length_stats_impl(bool sort_by_count) const;
     void        extract_ip_packet(const uint8_t *ethernet_data, uint32_t total_length, uint16_t ethertype);
     void        print_ip_packet_list(const std::vector<std::vector<uint8_t>> &packets, const std::string &protocol_name,
                                      bool is_ipv4) const;
 
 public:
-    PcapReader() = default;
-    ~PcapReader();
+    PcapReader()  = default;
+    ~PcapReader() = default;
 
     bool     open(const std::string &filename);
     uint32_t read_and_analyze_packets();

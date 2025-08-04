@@ -14,7 +14,7 @@ typedef struct EthernetHeader
     uint16_t ethertype;
 } ethernet_header_t;
 
-static_assert(sizeof(ethernet_header_t) == 14, "Ethernet header не может быть меньше 14 байтов");
+static_assert(sizeof(ethernet_header_t) == 14, "Ethernet header должен быть ровно 14 байт");
 
 struct MacPair
 {

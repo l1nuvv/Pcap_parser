@@ -4,27 +4,31 @@
 
 #include "pcap_reader.h"
 
-PcapReader::~PcapReader()
-{
-    if (file.is_open()) { file.close(); }
-}
-
 bool PcapReader::open(const std::string &filename)
 {
-    file.open(filename, std::ios::binary);
+    std::ifstream file(filename, std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
         std::cerr << "Error: не получается открыть файл в бинарном режиме " << filename << std::endl;
         return false;
     }
 
-    file.read(reinterpret_cast<char *>(&global_header), sizeof(global_header));
-    if (file.gcount() != sizeof(global_header)) {
+    std::streamsize size = file.tellg();
+    if (size < sizeof(pcap_header_t)) {
         std::cerr << "Error: файл слишком мал для pcap header" << std::endl;
         return false;
     }
+    file.seekg(0, std::ios::beg);
+    buffer.resize(static_cast<size_t>(size));
+    buffer_size = static_cast<size_t>(size);
+    if (!file.read(reinterpret_cast<char *>(buffer.data()), size)) {
+        std::cerr << "Error: не удалость прочитать весь файл в буфер" << std::endl;
+        return false;
+    }
+    buffer_pos = 0;
 
+    std::memcpy(&global_header, buffer.data(), sizeof(pcap_header_t));
     if (global_header.magic_number != 0xa1b2c3d4) {
-        std::cerr << "Error: неправильное magic число(сигнатура)" << std::endl;
+        std::cerr << "Error: неправильный magic number(сигнатура)" << std::endl;
         return false;
     }
     return true;
@@ -37,35 +41,37 @@ uint32_t PcapReader::get_linktype() const
 
 uint32_t PcapReader::read_and_analyze_packets()
 {
-    file.seekg(sizeof(global_header), std::ios::beg);
-    packet_count = 0;
-    ipv4_count   = 0;
-    ipv6_count   = 0;
+    size_t offset = sizeof(pcap_header_t);
+    packet_count  = 0;
+    ipv4_count    = 0;
+    ipv6_count    = 0;
 
-    pcaprec_header_t packet_header;
-    while (file.read(reinterpret_cast<char *>(&packet_header), sizeof(packet_header))) {
-        if (file.gcount() != sizeof(packet_header)) { break; }
-        process_single_packet(packet_header);
+    while (offset + sizeof(pcaprec_header_t) <= buffer.size()) {
+        pcaprec_header_t packet_header;
+
+        std::memcpy(&packet_header, buffer.data() + offset, sizeof(pcaprec_header_t));
+        offset += sizeof(pcaprec_header_t);
+
+        if (offset + packet_header.incl_len > buffer.size()) {
+            std::cerr << "Error: выход за пределы файла - некорректная длина пакета" << std::endl;
+            break;
+        }
+
+        process_single_packet(packet_header, buffer.data() + offset);
+        offset += packet_header.incl_len;
         packet_count++;
     }
     return packet_count;
 }
 
-void PcapReader::process_single_packet(const pcaprec_header_t &packet_header)
+void PcapReader::process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data)
 {
     length_stats[packet_header.incl_len]++;
+
     if (packet_header.incl_len >= ETHERNET_HEADER_SIZE) {
-        std::vector<uint8_t> full_packet_data(packet_header.incl_len);
-        file.read(reinterpret_cast<char *>(full_packet_data.data()), packet_header.incl_len);
-        if (file.gcount() == packet_header.incl_len) {
-            analyze_ethernet_header(full_packet_data.data());
-            extract_ip_packet(full_packet_data.data(), packet_header.incl_len,
-                              (full_packet_data[12] << 8) | full_packet_data[13]);
-        } else {
-            file.seekg(packet_header.incl_len - file.gcount(), std::ios::cur);
-        }
-    } else {
-        file.seekg(packet_header.incl_len, std::ios::cur);
+        analyze_ethernet_header(packet_data);
+        uint16_t ethertype = (packet_data[12] << 8) | packet_data[13];
+        extract_ip_packet(packet_data, packet_header.incl_len, ethertype);
     }
 }
 
