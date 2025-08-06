@@ -13,13 +13,13 @@
 // Глобальный заголовок pcap-файла
 typedef struct PCAPGlobalHeader
 {
-    const uint32_t magic_number  = 0xa1b2c3d4; // сигнатура (magic number)
-    const uint16_t version_major = 2;          // основная (major) версия по умолчанию 2
-    const uint16_t version_minor = 4;          // дополнительная (minor) версия по умолчанию 4
-    const int32_t  thiszone      = 0;          // смещение по времени от GMT (по умолчанию 0)
-    const uint32_t sigfigs       = 0;          // точность метки времени (обычно 0)
-    const uint32_t snaplen       = 65535;      // максимальная длина пакета (по умолчанию 65535)
-    uint32_t       network       = 1;          // тип канального уровня (1 — Ethernet, соответствует linktype)
+    uint32_t magic_number  = 0xa1b2c3d4; // сигнатура (magic number)
+    uint16_t version_major = 2;          // основная (major) версия по умолчанию 2
+    uint16_t version_minor = 4;          // дополнительная (minor) версия по умолчанию 4
+    int32_t  thiszone      = 0;          // смещение по времени от GMT (по умолчанию 0)
+    uint32_t sigfigs       = 0;          // точность метки времени (обычно 0)
+    uint32_t snaplen       = 65535;      // максимальная длина пакета (по умолчанию 65535)
+    uint32_t network       = 1;          // тип канального уровня (1 — Ethernet, соответствует linktype)
 } pcap_header_t;
 
 // Заголовок записи (пакета) в pcap-файле
