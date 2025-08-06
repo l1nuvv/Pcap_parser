@@ -6,6 +6,7 @@
 #define PCAP_PARSER_IPPACKETMANAGER_H
 
 #include <algorithm>
+#include <cstdint>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
