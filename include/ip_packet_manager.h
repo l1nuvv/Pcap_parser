@@ -35,6 +35,9 @@ public:
                               bool is_ipv4) const;
     void extract_ip_packet(const uint8_t *ethernet_data, uint32_t total_length, uint16_t ethertype);
 
+    uint32_t get_ipv4_count();
+    uint32_t get_ipv6_count();
+
     void print_ipv4_packet_list() const;
     void print_ipv6_packet_list() const;
 

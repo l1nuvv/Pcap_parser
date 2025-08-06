@@ -27,6 +27,14 @@ void ip_packet_manager::extract_ip_packet(const uint8_t *ethernet_data, uint32_t
         }
     }
 }
+uint32_t ip_packet_manager::get_ipv4_count()
+{
+    return ipv4_count;
+}
+uint32_t ip_packet_manager::get_ipv6_count()
+{
+    return ipv6_count;
+}
 
 std::string ip_packet_manager::format_ipv4_adress(const uint8_t *addr) const
 {

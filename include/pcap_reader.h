@@ -34,8 +34,10 @@ private:
     ethernet_parser   ethernet_parser;
     ip_packet_manager ip_packet_manager;
 
-    void process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data);
-    void print_length_stats_impl(bool sort_by_count) const;
+    void        process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data);
+    void        print_length_stats_impl(bool sort_by_count) const;
+    static bool sort_by_count_comparator(const std::pair<uint32_t, uint32_t> &a,
+                                         const std::pair<uint32_t, uint32_t> &b);
 
 
 public:
@@ -51,8 +53,10 @@ public:
     void print_length_stats_by_count() const;
 
     void print_mac_pair_stats() const;
+
     void print_ipv4_packet_list() const;
     void print_ipv6_packet_list() const;
+
     bool save_ipv4_packets(const std::string &filename) const;
     bool save_ipv6_packets(const std::string &filename) const;
 

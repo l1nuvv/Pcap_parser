@@ -1,6 +1,7 @@
-#include "../include/pcap_reader.h"
+#include "pcap_reader.h"
 
 #include <cerrno>
+#include <clocale>
 #include <cstring>
 #include <iostream>
 
@@ -22,9 +23,10 @@ bool create_directory(const std::string &path)
     return result == 0 || errno == EEXIST;
 #endif
 }
+
 int main(int argc, char *argv[])
 {
-    setlocale(LC_ALL, "ru_RU.UTF-8");
+    std::setlocale(LC_ALL, "ru_RU.UTF-8");
     std::cout << "=== PCAP PARSER ===" << std::endl;
 
     if (argc != 2) {
@@ -72,8 +74,8 @@ int main(int argc, char *argv[])
     }
 
 #ifdef _WIN32
-    std::string ipv4_filename = result_dir + "\\ipv4_packets.pack2\\";
-    std::string ipv6_filename = result_dir + "\\ipv6_packets.pack4\\";
+    std::string ipv4_filename = result_dir + "\\ipv4_packets.pack2";
+    std::string ipv6_filename = result_dir + "\\ipv6_packets.pack4";
 #else
     std::string ipv4_filename = result_dir + "/ipv4_packets.pack2";
     std::string ipv6_filename = result_dir + "/ipv6_packets.pack4";
@@ -87,8 +89,9 @@ int main(int argc, char *argv[])
     bool ipv6_saved = reader.save_ipv6_packets(ipv6_filename);
 
     if (ipv4_saved && ipv6_saved) {
-        std::cout << "\nВсе выходные файлы созданы по пути: cmake-build-debug\\result\\ " << std::endl;
-        std::cout << "Файлы: ipv4_packets.pack2, ipv6_packets.pack4" << std::endl;
+        std::cout << "\nВсе выходные файлы созданы по пути: cmake-build-debug\\result\\" << std::endl;
+        std::cout << "IPv4 пакеты сохранены в " << ipv4_filename << std::endl;
+        std::cout << "IPv6 пакеты сохранены в " << ipv6_filename << std::endl;
     }
 
     return 0;

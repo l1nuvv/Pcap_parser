@@ -46,7 +46,7 @@ add_custom_command(TARGET Pcap_parser POST_BUILD
 # === ИНФОРМАЦИЯ О СБОРКЕ ===
 message(STATUS "")
 message(STATUS "=== Конфигурация сборки ===")
-message(STATUS "Компилятор: ${CMAKE_CXX_COMPILER_ID}")
+message(STATUS "Компилятор: ${CMAKE_CXX_COMPILER_ID} ${CMAKE_CXX_COMPILER_VERSION}")
 message(STATUS "Стандарт C++: ${CMAKE_CXX_STANDARD}")
 message(STATUS "Тип сборки: ${CMAKE_BUILD_TYPE}")
 message(STATUS "==========================")

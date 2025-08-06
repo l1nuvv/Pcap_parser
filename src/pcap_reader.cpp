@@ -42,12 +42,7 @@ uint32_t PcapReader::get_linktype() const
 uint32_t PcapReader::read_and_analyze_packets()
 {
     size_t offset = sizeof(pcap_header_t);
-    while (true) {
-        if (offset + sizeof(pcaprec_header_t) > buffer.size()) {
-            std::cerr << "Error: достижение конца буфера при чтение заголовка пакета\n";
-            break;
-        }
-
+    while (offset + sizeof(pcaprec_header_t) <= buffer.size()) {
         const pcaprec_header_t *packet_header_ptr = reinterpret_cast<const pcaprec_header_t *>(buffer.data() + offset);
         pcaprec_header_t        packet_header     = *packet_header_ptr;
         offset += sizeof(pcaprec_header_t);
@@ -58,10 +53,12 @@ uint32_t PcapReader::read_and_analyze_packets()
         }
 
         process_single_packet(packet_header, buffer.data() + offset);
-
         offset += packet_header.incl_len;
         packet_count++;
     }
+    ipv4_count = ip_packet_manager.get_ipv4_count();
+    ipv6_count = ip_packet_manager.get_ipv6_count();
+
     return packet_count;
 }
 
