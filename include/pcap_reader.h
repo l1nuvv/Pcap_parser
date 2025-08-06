@@ -31,8 +31,8 @@ private:
 
     std::map<uint32_t, uint32_t> length_stats;
 
-    ethernet_parser   ethernet_parser;
-    ip_packet_manager ip_packet_manager;
+    ethernet_parser   ethernet_parser_obj;
+    ip_packet_manager ip_packet_manager_obj;
 
     void        process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data);
     void        print_length_stats_impl(bool sort_by_count) const;

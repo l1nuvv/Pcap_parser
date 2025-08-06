@@ -56,8 +56,8 @@ uint32_t PcapReader::read_and_analyze_packets()
         offset += packet_header.incl_len;
         packet_count++;
     }
-    ipv4_count = ip_packet_manager.get_ipv4_count();
-    ipv6_count = ip_packet_manager.get_ipv6_count();
+    ipv4_count = ip_packet_manager_obj.get_ipv4_count();
+    ipv6_count = ip_packet_manager_obj.get_ipv6_count();
 
     return packet_count;
 }
@@ -66,9 +66,9 @@ void PcapReader::process_single_packet(const pcaprec_header_t &packet_header, co
 {
     length_stats[packet_header.incl_len]++;
     if (packet_header.incl_len >= ETHERNET_HEADER_SIZE) {
-        ethernet_parser.analyze_ethernet_header(packet_data);
+        ethernet_parser_obj.analyze_ethernet_header(packet_data);
         uint16_t ethertype = (packet_data[12] << 8) | packet_data[13];
-        ip_packet_manager.extract_ip_packet(packet_data, packet_header.incl_len, ethertype);
+        ip_packet_manager_obj.extract_ip_packet(packet_data, packet_header.incl_len, ethertype);
     }
 }
 
@@ -120,25 +120,25 @@ void PcapReader::print_length_stats_by_count() const
 
 void PcapReader::print_mac_pair_stats() const
 {
-    ethernet_parser.print_mac_pair_stats();
+    ethernet_parser_obj.print_mac_pair_stats();
 }
 
 void PcapReader::print_ipv4_packet_list() const
 {
-    ip_packet_manager.print_ipv4_packet_list();
+    ip_packet_manager_obj.print_ipv4_packet_list();
 }
 
 void PcapReader::print_ipv6_packet_list() const
 {
-    ip_packet_manager.print_ipv6_packet_list();
+    ip_packet_manager_obj.print_ipv6_packet_list();
 }
 
 bool PcapReader::save_ipv4_packets(const std::string &filename) const
 {
-    return ip_packet_manager.save_ipv4_packets(filename);
+    return ip_packet_manager_obj.save_ipv4_packets(filename);
 }
 
 bool PcapReader::save_ipv6_packets(const std::string &filename) const
 {
-    return ip_packet_manager.save_ipv6_packets(filename);
+    return ip_packet_manager_obj.save_ipv6_packets(filename);
 }
