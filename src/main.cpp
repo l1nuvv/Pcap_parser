@@ -26,7 +26,11 @@ bool create_directory(const std::string &path)
 
 int main(int argc, char *argv[])
 {
+#ifdef _WIN32
+    std::setlocale(LC_ALL, "Russian");
+#else
     std::setlocale(LC_ALL, "ru_RU.UTF-8");
+#endif
     std::cout << "=== PCAP PARSER ===" << std::endl;
 
     if (argc != 2) {

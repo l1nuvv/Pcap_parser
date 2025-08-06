@@ -5,8 +5,8 @@
 ## Требования к системе
 
 - **Компилятор**:
-    - Windows: MSVC 
-    - Linux: GCC
+    - Windows: MSVC 120+
+    - Linux: GCC (любой)
 - **Стандарт**: C++11
 - **Система сборки**: CMake 3.5+
 - **Тесты** : Google Test
@@ -41,6 +41,34 @@ cd build
 # Конфигурация и сборка
 cmake ..
 cmake --build .
+```
+
+### VS Tools
+
+#### 1.Откройте терминал Developer Command Prompt for VS2013
+
+#### 2. Перейдите в папку с проектом
+
+```bash
+cd /d E:\Code\C++\Pcap_parser
+```
+
+#### 3. Соберите проект командой
+
+```bash
+cl /EHsc src\main.cpp src\pcap_reader.cpp src\ethernet_parser.cpp src\ip_packet_manager.cpp /Iinclude /FePcapParser.exe
+```
+
+#### 4. Включите русский язык в терминале
+
+```bash
+chcp 65001
+```
+
+#### 5. Запустите программу
+
+```bash
+PcapParser.exe traffic.pcap
 ```
 
 ## Использование
