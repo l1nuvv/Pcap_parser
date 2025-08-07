@@ -11,14 +11,14 @@ void ip_packet_manager::extract_ip_packet(const uint8_t *ethernet_data, uint32_t
     const uint8_t *ip_data   = ethernet_data + ETHERNET_HEADER_SIZE;
     uint32_t       ip_length = total_length - ETHERNET_HEADER_SIZE;
 
-    if (ethertype == IPV4_ETHERTYPE && ip_length >= 20) {
+    if (ethertype == IPV4_ETHERTYPE && ip_length >= IPV4_HEADER_SIZE) {
         uint8_t version = (ip_data[0] >> 4) & 0x0F;
         if (version == 4) {
             ipv4_count++;
             std::vector<uint8_t> ipv4_packet(ip_data, ip_data + ip_length);
             ipv4_packets.push_back(std::move(ipv4_packet));
         }
-    } else if (ethertype == IPV6_ETHERTYPE && ip_length >= 40) {
+    } else if (ethertype == IPV6_ETHERTYPE && ip_length >= IPV6_HEADER_SIZE) {
         uint8_t version = (ip_data[0] >> 4) & 0x0F;
         if (version == 6) {
             ipv6_count++;
@@ -36,13 +36,13 @@ uint32_t ip_packet_manager::get_ipv6_count()
     return ipv6_count;
 }
 
-std::string ip_packet_manager::format_ipv4_adress(const uint8_t *addr) const
+std::string ip_packet_manager::format_ipv4_address(const uint8_t *addr) const
 {
     return std::to_string(addr[0]) + "." + std::to_string(addr[1]) + "." + std::to_string(addr[2]) + "." +
            std::to_string(addr[3]);
 }
 
-std::string ip_packet_manager::format_ipv6_adress(const uint8_t *addr) const
+std::string ip_packet_manager::format_ipv6_address(const uint8_t *addr) const
 {
     std::stringstream ss;
     for (size_t i = 0; i < 16; i += 2) {
@@ -66,14 +66,15 @@ void ip_packet_manager::print_ip_packet_list(const std::vector<std::vector<uint8
 
     for (size_t i = 0; i < packets.size(); ++i) {
         const auto &packet          = packets[i];
-        size_t      min_header_size = is_ipv4 ? 20 : 40;
+        size_t      min_header_size = is_ipv4 ? IPV4_HEADER_SIZE : IPV6_HEADER_SIZE;
         if (packet.size() >= min_header_size) {
             std::cout << "Пакет " << (i + 1) << ": ";
 
             if (is_ipv4) {
-                std::cout << format_ipv4_adress(&packet[12]) << " -> " << format_ipv4_adress(&packet[16]) << std::endl;
+                std::cout << format_ipv4_address(&packet[12]) << " -> " << format_ipv4_address(&packet[16])
+                          << std::endl;
             } else {
-                std::cout << format_ipv6_adress(&packet[8]) << " -> " << format_ipv6_adress(&packet[24]) << std::endl;
+                std::cout << format_ipv6_address(&packet[8]) << " -> " << format_ipv6_address(&packet[24]) << std::endl;
             }
         }
     }
