@@ -70,8 +70,8 @@ int main(int argc, char *argv[])
     std::cout << "\n=== СТАТИСТИКА ПАР MAC ===" << std::endl;
     reader.print_mac_pair_stats();
 
-    reader.print_ipv4_packet_list();
-    reader.print_ipv6_packet_list();
+    // reader.print_ipv4_packet_list();
+    // reader.print_ipv6_packet_list();
 
     std::cout << "\n=== СОЗДАНИЕ ВЫХОДНЫХ ФАЙЛОВ ===" << std::endl;
 
