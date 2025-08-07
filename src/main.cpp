@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
 
     const std::string pcap_file = argv[1];
 
+    std::cout << "\nРаботаем с <pcap_file>: " << pcap_file << std::endl;
     // Создаем объект класса
     PcapReader reader;
 
