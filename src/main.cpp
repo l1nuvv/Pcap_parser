@@ -25,6 +25,12 @@ bool create_directory(const std::string &path)
 #endif
 }
 
+void PressAnyKey () {
+    std::cout << "\nНажмите любую клавишу..." << std::endl;
+    std::cin.get();
+    return;
+}
+
 int main(int argc, char *argv[])
 {
 #ifdef _WIN32
@@ -37,6 +43,7 @@ int main(int argc, char *argv[])
     if (argc != 2) {
         std::cout << "\nИспользуем: " << argv[0] << " <pcap_file>" << std::endl;
         std::cout << "\nПодсказка: напишите путь до pcap файла" << std::endl;
+        PressAnyKey();
         return 1;
     }
 
@@ -48,6 +55,7 @@ int main(int argc, char *argv[])
     if (!reader.open(pcap_file)) {
         std::cout << "Error: не получается открыть pcap файл!" << std::endl;
         std::cout << "Убедитесь, что файл существует и он .pcap" << std::endl;
+        PressAnyKey();
         return 1;
     }
 
@@ -98,6 +106,6 @@ int main(int argc, char *argv[])
         std::cout << "IPv4 пакеты сохранены в " << ipv4_filename << std::endl;
         std::cout << "IPv6 пакеты сохранены в " << ipv6_filename << std::endl;
     }
-
+    PressAnyKey();
     return 0;
 }
