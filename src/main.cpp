@@ -7,6 +7,7 @@
 
 #ifdef _WIN32
 #include <direct.h>
+#include <windows.h>
 #define mkdir _mkdir
 #else
 #include <sys/stat.h>
@@ -27,7 +28,7 @@ bool create_directory(const std::string &path)
 int main(int argc, char *argv[])
 {
 #ifdef _WIN32
-    std::setlocale(LC_ALL, "Russian");
+    SetConsoleOutputCP(CP_UTF8);
 #else
     std::setlocale(LC_ALL, "ru_RU.UTF-8");
 #endif
