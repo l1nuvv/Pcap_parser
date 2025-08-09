@@ -50,7 +50,7 @@ cmake --build .
 #### 2. Перейдите в папку с проектом
 
 ```bash
-cd /d E:\Code\C++\Pcap_parser
+cd /d \Pcap_parser
 ```
 
 #### 3. Соберите проект командой
