@@ -4,21 +4,28 @@
 
 #include "ethernet_parser.h"
 
+#include "ip_packet_manager.h"
+#include "pcap_reader.h"
+
 std::string ethernet_parser::mac_to_string(const uint8_t *mac) const
 {
     std::stringstream ss;
     for (size_t i = 0; i < MAC_ADDRESS_SIZE; ++i) {
         if (i > 0) ss << ":";
-        ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<int>(mac[i]);
+        ss << std::hex << std::nouppercase << std::setw(2) << std::setfill('0') << static_cast<unsigned>(mac[i]);
     }
     return ss.str();
 }
 
-void ethernet_parser::analyze_ethernet_header(const uint8_t *ethernet_header)
+void ethernet_parser::analyze_ethernet_header(const uint8_t *ethernet_data, size_t length)
 {
+    if (length < ETHERNET_HEADER_SIZE || ethernet_data == nullptr) return;
+
+    const auto *mac_pair_ethernet_header = reinterpret_cast<const ethernet_header_t *>(ethernet_data);
+
     MacPair mac_pair;
-    mac_pair.dst_mac = mac_to_string(&ethernet_header[0]);
-    mac_pair.src_mac = mac_to_string(&ethernet_header[6]);
+    mac_pair.dst_mac = mac_to_string(mac_pair_ethernet_header->dst_mac);
+    mac_pair.src_mac = mac_to_string(mac_pair_ethernet_header->src_mac);
     mac_pair_stats[mac_pair]++;
 }
 

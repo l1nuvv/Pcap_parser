@@ -4,6 +4,7 @@
 
 #ifndef ETHERNET_STRUCTS_H
 #define ETHERNET_STRUCTS_H
+
 #include <cstdint>
 #include <string>
 

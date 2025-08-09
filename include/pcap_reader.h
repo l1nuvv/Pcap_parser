@@ -19,6 +19,7 @@
 class PcapReader {
 private:
     static const size_t ETHERNET_HEADER_SIZE = 14;
+    static const size_t ETHERTYPE_BYTE_SHIFT = 8;
 
     std::vector<uint8_t> buffer;
     size_t               buffer_pos  = 0;
@@ -34,10 +35,9 @@ private:
     ethernet_parser   ethernet_parser_obj;
     ip_packet_manager ip_packet_manager_obj;
 
-    void        process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data);
-    void        print_length_stats_impl(bool sort_by_count) const;
-    static bool sort_by_count_comparator(const std::pair<uint32_t, uint32_t> &a,
-                                         const std::pair<uint32_t, uint32_t> &b);
+    void process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data);
+    void print_length_stats_sort(bool sort_by_count) const;
+    void print_length_stats_multimap(bool sort_by_count) const;
 
 
 public:

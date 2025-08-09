@@ -4,6 +4,8 @@
 
 #include "pcap_reader.h"
 
+#include <chrono>
+
 bool PcapReader::open(const std::string &filename)
 {
     std::ifstream file(filename.c_str(), std::ios::binary | std::ios::ate);
@@ -66,14 +68,17 @@ void PcapReader::process_single_packet(const pcaprec_header_t &packet_header, co
 {
     length_stats[packet_header.incl_len]++;
     if (packet_header.incl_len >= ETHERNET_HEADER_SIZE) {
-        ethernet_parser_obj.analyze_ethernet_header(packet_data);
-        uint16_t ethertype = (packet_data[12] << 8) | packet_data[13];
+        ethernet_parser_obj.analyze_ethernet_header(packet_data, packet_header.incl_len);
+        const auto *mac_pair_ethernet_header = reinterpret_cast<const ethernet_header_t *>(packet_data);
+        uint16_t    ethertype_be             = mac_pair_ethernet_header->ethertype;
+        uint16_t    ethertype                = static_cast<uint16_t>((ethertype_be >> ETHERTYPE_BYTE_SHIFT) |
+                                                                     (ethertype_be << ETHERTYPE_BYTE_SHIFT));
         ip_packet_manager_obj.extract_ip_packet(packet_data, packet_header.incl_len, ethertype);
     }
 }
 
 
-void PcapReader::print_length_stats_impl(bool sort_by_count) const
+void PcapReader::print_length_stats_sort(bool sort_by_count) const
 {
     if (sort_by_count) {
         std::vector<std::pair<uint32_t, uint32_t>> sorted_stats;
@@ -81,10 +86,18 @@ void PcapReader::print_length_stats_impl(bool sort_by_count) const
         for (const auto &pair: length_stats) {
             sorted_stats.emplace_back(pair.first, pair.second);
         }
+        auto start = std::chrono::high_resolution_clock::now();
+
         std::sort(sorted_stats.begin(), sorted_stats.end(),
                   [](const std::pair<uint32_t, uint32_t> &a, const std::pair<uint32_t, uint32_t> &b) {
                       return a.second < b.second;
                   });
+
+        auto end      = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+
+        std::cout << "Время сортировки для std::sort : " << duration.count() << " микросекунд" << std::endl;
+
 
         for (const auto &pair: sorted_stats) {
             std::cout << "Длина пакета " << pair.first << ": количество " << pair.second << std::endl;
@@ -95,6 +108,16 @@ void PcapReader::print_length_stats_impl(bool sort_by_count) const
         }
     }
 }
+/*void PcapReader::print_length_stats_multimap(bool sort_by_count) const
+{
+    if (sort_by_count) {
+        for (const auto &pair: length_stats) {
+            sorted_stats.emplace_back(pair.first, pair.second);
+        }
+        auto start = std::chrono::high_resolution_clock::now();
+        std::multimap<>
+    }
+}*/
 
 
 void PcapReader::print_basic_info() const
@@ -109,13 +132,13 @@ void PcapReader::print_basic_info() const
 void PcapReader::print_length_stats_by_length() const
 {
     std::cout << "В порядке возрастания длин: " << std::endl;
-    print_length_stats_impl(false);
+    print_length_stats_sort(false);
 }
 
 void PcapReader::print_length_stats_by_count() const
 {
     std::cout << "\nВ порядке возрастания количества: " << std::endl;
-    print_length_stats_impl(true);
+    print_length_stats_sort(true);
 }
 
 void PcapReader::print_mac_pair_stats() const
