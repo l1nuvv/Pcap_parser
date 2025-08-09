@@ -5,7 +5,7 @@
 #ifndef PCAP_PARSER_ETHERNETPARSER_H
 #define PCAP_PARSER_ETHERNETPARSER_H
 
-#include "ethernet_structs.h"
+#include "structs/ethernet_structs.h"
 #include <iomanip>
 #include <iostream>
 #include <map>

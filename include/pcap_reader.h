@@ -1,8 +1,9 @@
 #ifndef PCAP_READER_H
 #define PCAP_READER_H
 
-#include "ethernet_structs.h"
-#include "pcap_structs.h"
+#include "CArrayWrapper.h"
+#include "structs/ethernet_structs.h"
+#include "structs/pcap_structs.h"
 
 #include "ethernet_parser.h"
 #include "ip_packet_manager.h"
@@ -20,12 +21,14 @@ class PcapReader {
 private:
     static const size_t ETHERNET_HEADER_SIZE = 14;
     static const size_t ETHERTYPE_BYTE_SHIFT = 8;
+    static const size_t MAGIC_NUMBER         = 0xa1b2c3d4;
+    static const size_t R_MAGIC_NUMBER       = 0xd4c3b2a1;
 
-    std::vector<uint8_t> buffer;
-    size_t               buffer_pos  = 0;
-    size_t               buffer_size = 0;
-    pcap_header_t        global_header;
-    uint32_t             packet_count;
+    std::shared_ptr<CArrayWrapper<uint8_t>> buffer;
+    size_t                                  buffer_pos  = 0;
+    size_t                                  buffer_size = 0;
+    pcap_header_t                           global_header;
+    uint32_t                                packet_count;
 
     uint32_t ipv4_count;
     uint32_t ipv6_count;

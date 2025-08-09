@@ -25,10 +25,10 @@ bool create_directory(const std::string &path)
 #endif
 }
 
-void PressAnyKey () {
+void PressAnyKey()
+{
     std::cout << "\nНажмите любую клавишу..." << std::endl;
     std::cin.get();
-    return;
 }
 
 int main(int argc, char *argv[])

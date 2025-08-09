@@ -6,7 +6,48 @@
 
 #include <chrono>
 
+
 bool PcapReader::open(const std::string &filename)
+{
+    std::ifstream file(filename.c_str(), std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+        std::cerr << "Error: не получается открыть файл в бинарном режиме " << filename << std::endl;
+        return false;
+    }
+    std::streamsize size = file.tellg();
+    if (size < sizeof(pcap_header_t)) {
+        std::cerr << "Error: файл слишком мал для pcap header" << std::endl;
+        return false;
+    }
+    file.seekg(0, std::ios::beg);
+
+    buffer_size = static_cast<size_t>(size);
+    buffer      = std::make_shared<CArrayWrapper<uint8_t>>(buffer_size);
+
+    if (!file.read(reinterpret_cast<char *>(buffer->raw_data()), size)) {
+        std::cerr << "Error: не удалось прочитать весь файл в буфер" << std::endl;
+        buffer.reset();
+        buffer_size = 0;
+        return false;
+    }
+
+    if (buffer_size < sizeof(pcap_header_t)) {
+        std::cerr << "Error: файл повреждён (меньше pcap_header_t)" << std::endl;
+        return false;
+    }
+    const auto *header_ptr = reinterpret_cast<const pcap_header_t *>(buffer->raw_data());
+    global_header          = *header_ptr;
+
+    if (global_header.magic_number != MAGIC_NUMBER && global_header.magic_number != R_MAGIC_NUMBER) {
+        std::cerr << "Error: неправильный magic number(сигнатура)" << std::endl;
+        return false;
+    }
+
+    return true;
+}
+
+
+/*bool PcapReader::open(const std::string &filename)
 {
     std::ifstream file(filename.c_str(), std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
@@ -34,7 +75,7 @@ bool PcapReader::open(const std::string &filename)
         return false;
     }
     return true;
-}
+}*/
 
 uint32_t PcapReader::get_linktype() const
 {
@@ -43,18 +84,27 @@ uint32_t PcapReader::get_linktype() const
 
 uint32_t PcapReader::read_and_analyze_packets()
 {
-    size_t offset = sizeof(pcap_header_t);
-    while (offset + sizeof(pcaprec_header_t) <= buffer.size()) {
-        const pcaprec_header_t *packet_header_ptr = reinterpret_cast<const pcaprec_header_t *>(buffer.data() + offset);
-        pcaprec_header_t        packet_header     = *packet_header_ptr;
+    if (!buffer || buffer_size < sizeof(pcap_header_t)) {
+        std::cerr << "Error: буфер пуст или слишком мал" << std::endl;
+        return 0;
+    }
+
+    size_t         offset = sizeof(pcap_header_t);
+    const uint8_t *base   = buffer->raw_data();
+
+    while (offset + sizeof(pcaprec_header_t) <= buffer_size) {
+        const auto      *packet_header_ptr = reinterpret_cast<const pcaprec_header_t *>(base + offset);
+        pcaprec_header_t packet_header     = *packet_header_ptr;
+
         offset += sizeof(pcaprec_header_t);
 
-        if (offset + packet_header.incl_len > buffer.size()) {
+        if (offset + packet_header.incl_len > buffer_size) {
             std::cerr << "Error: выход за пределы буфера - неправильная длина пакета\n";
             break;
         }
 
-        process_single_packet(packet_header, buffer.data() + offset);
+        const uint8_t *packet_data = base + offset;
+        process_single_packet(packet_header, packet_data);
         offset += packet_header.incl_len;
         packet_count++;
     }
@@ -80,45 +130,47 @@ void PcapReader::process_single_packet(const pcaprec_header_t &packet_header, co
 
 void PcapReader::print_length_stats_sort(bool sort_by_count) const
 {
-    if (sort_by_count) {
-        std::vector<std::pair<uint32_t, uint32_t>> sorted_stats;
+    using clock = std::chrono::high_resolution_clock;
 
-        for (const auto &pair: length_stats) {
-            sorted_stats.emplace_back(pair.first, pair.second);
-        }
-        auto start = std::chrono::high_resolution_clock::now();
-
-        std::sort(sorted_stats.begin(), sorted_stats.end(),
-                  [](const std::pair<uint32_t, uint32_t> &a, const std::pair<uint32_t, uint32_t> &b) {
-                      return a.second < b.second;
-                  });
-
-        auto end      = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-
-        std::cout << "Время сортировки для std::sort : " << duration.count() << " микросекунд" << std::endl;
-
-
-        for (const auto &pair: sorted_stats) {
-            std::cout << "Длина пакета " << pair.first << ": количество " << pair.second << std::endl;
-        }
-    } else {
+    if (!sort_by_count) {
         for (const auto &pair: length_stats) {
             std::cout << "Длина пакета " << pair.first << ": количество " << pair.second << std::endl;
         }
+        return;
+    }
+
+    std::vector<std::pair<uint32_t, uint32_t>> sorted_stats;
+    sorted_stats.reserve(length_stats.size());
+    for (const auto &pair: length_stats) {
+        sorted_stats.emplace_back(pair.first, pair.second);
+    }
+
+    auto start_sort = clock::now();
+    std::sort(sorted_stats.begin(), sorted_stats.end(), [](const auto &a, const auto &b) {
+        if (a.second != b.second) { return a.second < b.second; }
+        return a.first < b.first;
+    });
+    auto end_sort      = clock::now();
+    auto duration_sort = std::chrono::duration_cast<std::chrono::microseconds>(end_sort - start_sort).count();
+
+    auto                              start_multimap = clock::now();
+    std::multimap<uint32_t, uint32_t> count_to_length;
+    for (const auto &pair: length_stats) {
+        count_to_length.emplace(pair.second, pair.first);
+    }
+    auto end_multimap      = clock::now();
+    auto duration_multimap = std::chrono::duration_cast<std::chrono::microseconds>(end_multimap - start_multimap)
+                                     .count();
+
+    // Результаты бенчмарка
+    std::cout << "=== БЕНЧМАРК ===" << std::endl;
+    std::cout << "std::sort: " << duration_sort << " мкс" << std::endl;
+    std::cout << "std::multimap: " << duration_multimap << " мкс" << std::endl << std::endl;
+
+    for (const auto &pair: sorted_stats) {
+        std::cout << "Длина пакета " << pair.first << ": количество " << pair.second << std::endl;
     }
 }
-/*void PcapReader::print_length_stats_multimap(bool sort_by_count) const
-{
-    if (sort_by_count) {
-        for (const auto &pair: length_stats) {
-            sorted_stats.emplace_back(pair.first, pair.second);
-        }
-        auto start = std::chrono::high_resolution_clock::now();
-        std::multimap<>
-    }
-}*/
-
 
 void PcapReader::print_basic_info() const
 {
