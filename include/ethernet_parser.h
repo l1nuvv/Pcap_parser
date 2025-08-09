@@ -14,8 +14,6 @@
 
 class ethernet_parser {
 private:
-    static const size_t ETHERNET_HEADER_SIZE = 14;
-    static const size_t MAC_ADDRESS_SIZE     = 6;
 
     std::map<MacPair, uint64_t> mac_pair_stats;
     std::string                 mac_to_string(const uint8_t *mac) const;

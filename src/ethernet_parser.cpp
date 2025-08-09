@@ -10,7 +10,7 @@
 std::string ethernet_parser::mac_to_string(const uint8_t *mac) const
 {
     std::stringstream ss;
-    for (size_t i = 0; i < MAC_ADDRESS_SIZE; ++i) {
+    for (size_t i = 0; i < pcap_constants::MAC_ADDRESS_SIZE; ++i) {
         if (i > 0) ss << ":";
         ss << std::hex << std::nouppercase << std::setw(2) << std::setfill('0') << static_cast<unsigned>(mac[i]);
     }
@@ -19,7 +19,7 @@ std::string ethernet_parser::mac_to_string(const uint8_t *mac) const
 
 void ethernet_parser::analyze_ethernet_header(const uint8_t *ethernet_data, size_t length)
 {
-    if (length < ETHERNET_HEADER_SIZE || ethernet_data == nullptr) return;
+    if (length < pcap_constants::ETHERNET_HEADER_SIZE || ethernet_data == nullptr) return;
 
     const auto *mac_pair_ethernet_header = reinterpret_cast<const ethernet_header_t *>(ethernet_data);
 

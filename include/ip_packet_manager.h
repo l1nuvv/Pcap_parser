@@ -5,6 +5,8 @@
 #ifndef PCAP_PARSER_IPPACKETMANAGER_H
 #define PCAP_PARSER_IPPACKETMANAGER_H
 
+#include "pcap_constants.h"
+
 #include <algorithm>
 #include <cstdint>
 #include <fstream>
@@ -16,12 +18,6 @@
 
 class ip_packet_manager {
 private:
-    static const size_t               ETHERNET_HEADER_SIZE = 14;
-    static const size_t               IPV4_ETHERTYPE       = 0x0800;
-    static const size_t               IPV6_ETHERTYPE       = 0x86DD;
-    static const size_t               MAX_PACKET_SIZE      = 65535;
-    static const size_t               IPV4_HEADER_SIZE     = 20;
-    static const size_t               IPV6_HEADER_SIZE     = 40;
     std::vector<std::vector<uint8_t>> ipv4_packets;
     std::vector<std::vector<uint8_t>> ipv6_packets;
     uint32_t                          ipv4_count;

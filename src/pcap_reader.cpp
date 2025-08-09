@@ -38,7 +38,8 @@ bool PcapReader::open(const std::string &filename)
     const auto *header_ptr = reinterpret_cast<const pcap_header_t *>(buffer->raw_data());
     global_header          = *header_ptr;
 
-    if (global_header.magic_number != MAGIC_NUMBER && global_header.magic_number != R_MAGIC_NUMBER) {
+    if (global_header.magic_number != pcap_constants::PCAP_MAGIC_NUMBER &&
+        global_header.magic_number != pcap_constants::PCAP_R_MAGIC_NUMBER) {
         std::cerr << "Error: неправильный magic number(сигнатура)" << std::endl;
         return false;
     }
@@ -117,12 +118,12 @@ uint32_t PcapReader::read_and_analyze_packets()
 void PcapReader::process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data)
 {
     length_stats[packet_header.incl_len]++;
-    if (packet_header.incl_len >= ETHERNET_HEADER_SIZE) {
+    if (packet_header.incl_len >= pcap_constants::ETHERNET_HEADER_SIZE) {
         ethernet_parser_obj.analyze_ethernet_header(packet_data, packet_header.incl_len);
         const auto *mac_pair_ethernet_header = reinterpret_cast<const ethernet_header_t *>(packet_data);
         uint16_t    ethertype_be             = mac_pair_ethernet_header->ethertype;
-        uint16_t    ethertype                = static_cast<uint16_t>((ethertype_be >> ETHERTYPE_BYTE_SHIFT) |
-                                                                     (ethertype_be << ETHERTYPE_BYTE_SHIFT));
+        uint16_t    ethertype = static_cast<uint16_t>((ethertype_be >> pcap_constants::ETHERTYPE_BYTE_SHIFT) |
+                                                      (ethertype_be << pcap_constants::ETHERTYPE_BYTE_SHIFT));
         ip_packet_manager_obj.extract_ip_packet(packet_data, packet_header.incl_len, ethertype);
     }
 }

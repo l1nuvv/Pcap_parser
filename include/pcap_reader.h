@@ -7,6 +7,7 @@
 
 #include "ethernet_parser.h"
 #include "ip_packet_manager.h"
+#include "pcap_constants.h"
 
 #include <algorithm>
 #include <fstream>
@@ -19,11 +20,6 @@
 
 class PcapReader {
 private:
-    static const size_t ETHERNET_HEADER_SIZE = 14;
-    static const size_t ETHERTYPE_BYTE_SHIFT = 8;
-    static const size_t MAGIC_NUMBER         = 0xa1b2c3d4;
-    static const size_t R_MAGIC_NUMBER       = 0xd4c3b2a1;
-
     std::shared_ptr<CArrayWrapper<uint8_t>> buffer;
     size_t                                  buffer_pos  = 0;
     size_t                                  buffer_size = 0;
@@ -40,8 +36,6 @@ private:
 
     void process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data);
     void print_length_stats_sort(bool sort_by_count) const;
-    void print_length_stats_multimap(bool sort_by_count) const;
-
 
 public:
     PcapReader() : packet_count(0), ipv4_count(0), ipv6_count(0) {};

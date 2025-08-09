@@ -6,19 +6,19 @@
 
 void ip_packet_manager::extract_ip_packet(const uint8_t *ethernet_data, uint32_t total_length, uint16_t ethertype)
 {
-    if (total_length <= ETHERNET_HEADER_SIZE) return;
+    if (total_length <= pcap_constants::ETHERNET_HEADER_SIZE) return;
 
-    const uint8_t *ip_data   = ethernet_data + ETHERNET_HEADER_SIZE;
-    uint32_t       ip_length = total_length - ETHERNET_HEADER_SIZE;
+    const uint8_t *ip_data   = ethernet_data + pcap_constants::ETHERNET_HEADER_SIZE;
+    uint32_t       ip_length = total_length - pcap_constants::ETHERNET_HEADER_SIZE;
 
-    if (ethertype == IPV4_ETHERTYPE && ip_length >= IPV4_HEADER_SIZE) {
+    if (ethertype == pcap_constants::IPV4_ETHERTYPE && ip_length >= pcap_constants::IPV4_HEADER_MIN_SIZE) {
         uint8_t version = (ip_data[0] >> 4) & 0x0F;
         if (version == 4) {
             ipv4_count++;
             std::vector<uint8_t> ipv4_packet(ip_data, ip_data + ip_length);
             ipv4_packets.push_back(std::move(ipv4_packet));
         }
-    } else if (ethertype == IPV6_ETHERTYPE && ip_length >= IPV6_HEADER_SIZE) {
+    } else if (ethertype == pcap_constants::IPV6_ETHERTYPE && ip_length >= pcap_constants::IPV6_HEADER_SIZE) {
         uint8_t version = (ip_data[0] >> 4) & 0x0F;
         if (version == 6) {
             ipv6_count++;
@@ -66,15 +66,16 @@ void ip_packet_manager::print_ip_packet_list(const std::vector<std::vector<uint8
 
     for (size_t i = 0; i < packets.size(); ++i) {
         const auto &packet          = packets[i];
-        size_t      min_header_size = is_ipv4 ? IPV4_HEADER_SIZE : IPV6_HEADER_SIZE;
+        size_t      min_header_size = is_ipv4 ? pcap_constants::IPV4_HEADER_MIN_SIZE : pcap_constants::IPV6_HEADER_SIZE;
         if (packet.size() >= min_header_size) {
             std::cout << "Пакет " << (i + 1) << ": ";
 
             if (is_ipv4) {
-                std::cout << format_ipv4_address(&packet[12]) << " -> " << format_ipv4_address(&packet[16])
-                          << std::endl;
+                std::cout << format_ipv4_address(&packet[pcap_constants::IPV4_SRC_ADDR_OFFSET]) << " -> "
+                          << format_ipv4_address(&packet[pcap_constants::IPV4_DST_ADDR_OFFSET]) << std::endl;
             } else {
-                std::cout << format_ipv6_address(&packet[8]) << " -> " << format_ipv6_address(&packet[24]) << std::endl;
+                std::cout << format_ipv6_address(&packet[pcap_constants::IPV6_SRC_ADDR_OFFSET]) << " -> "
+                          << format_ipv6_address(&packet[pcap_constants::IPV6_DST_ADDR_OFFSET]) << std::endl;
             }
         }
     }
@@ -103,7 +104,7 @@ bool ip_packet_manager::save_ipv4_packets(const std::string &filename) const
     }
 
     for (const auto &packet: ipv4_packets) {
-        if (packet.size() > MAX_PACKET_SIZE) {
+        if (packet.size() > pcap_constants::MAX_PACKET_SIZE) {
             std::cerr << "Warning: IPv4 пакет слишком большой (" << packet.size()
                       << " байтов), сжатие до MAX_PACKET_SIZE" << std::endl;
             continue;

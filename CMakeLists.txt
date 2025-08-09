@@ -26,6 +26,7 @@ set(HEADERS
         ${INCLUDE_DIR}/ethernet_parser.h
         ${INCLUDE_DIR}/ip_packet_manager.h
         ${INCLUDE_DIR}/CArrayWrapper.h
+        ${INCLUDE_DIR}/pcap_constants.h
 )
 
 add_executable(Pcap_parser ${SOURCES} ${HEADERS})
