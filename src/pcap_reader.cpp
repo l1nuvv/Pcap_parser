@@ -140,21 +140,34 @@ void PcapReader::print_length_stats_sort(bool sort_by_count) const
         return;
     }
 
-    std::vector<std::pair<uint32_t, uint32_t>> sorted_stats;
-    sorted_stats.reserve(length_stats.size());
-    for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
-        sorted_stats.push_back(std::make_pair(it->first, it->second));
+    // Бенчмарк std::sort
+    clock::time_point start_sort;
+    clock::time_point end_sort;
+    long long         duration_sort = 0;
+    const int         trials        = 50;
+
+    for (int t = 0; t < trials; ++t) {
+        std::vector<std::pair<uint32_t, uint32_t>> temp;
+        temp.reserve(length_stats.size());
+        for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
+            temp.push_back(std::make_pair(it->first, it->second));
+        }
+
+        std::random_shuffle(temp.begin(), temp.end());
+
+        start_sort = clock::now();
+        std::sort(temp.begin(), temp.end(),
+                  [](const std::pair<uint32_t, uint32_t> &a, const std::pair<uint32_t, uint32_t> &b) {
+                      if (a.second != b.second) { return a.second < b.second; }
+                      return a.first < b.first;
+                  });
+        end_sort = clock::now();
+        duration_sort += std::chrono::duration_cast<std::chrono::microseconds>(end_sort - start_sort).count();
     }
 
-    clock::time_point start_sort = clock::now();
-    std::sort(sorted_stats.begin(), sorted_stats.end(),
-              [](const std::pair<uint32_t, uint32_t> &a, const std::pair<uint32_t, uint32_t> &b) {
-                  if (a.second != b.second) { return a.second < b.second; }
-                  return a.first < b.first;
-              });
-    clock::time_point end_sort = clock::now();
-    long long duration_sort    = std::chrono::duration_cast<std::chrono::microseconds>(end_sort - start_sort).count();
+    long long avg_sort_time = duration_sort / trials;
 
+    // Бенчмарк std::multimap
     clock::time_point                 start_multimap = clock::now();
     std::multimap<uint32_t, uint32_t> count_to_length;
     for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
@@ -164,9 +177,23 @@ void PcapReader::print_length_stats_sort(bool sort_by_count) const
     long long duration_multimap = std::chrono::duration_cast<std::chrono::microseconds>(end_multimap - start_multimap)
                                           .count();
 
+    // Вывод бенчмарка
     std::cout << "=== БЕНЧМАРК ===" << std::endl;
-    std::cout << "std::sort: " << duration_sort << " мкс" << std::endl;
+    std::cout << "std::sort: " << avg_sort_time << " мкс" << std::endl;
     std::cout << "std::multimap: " << duration_multimap << " мкс" << std::endl << std::endl;
+
+    // Вывод результата сортировки
+    std::vector<std::pair<uint32_t, uint32_t>> sorted_stats;
+    sorted_stats.reserve(length_stats.size());
+    for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
+        sorted_stats.push_back(std::make_pair(it->first, it->second));
+    }
+
+    std::sort(sorted_stats.begin(), sorted_stats.end(),
+              [](const std::pair<uint32_t, uint32_t> &a, const std::pair<uint32_t, uint32_t> &b) {
+                  if (a.second != b.second) { return a.second < b.second; }
+                  return a.first < b.first;
+              });
 
     for (std::vector<std::pair<uint32_t, uint32_t>>::const_iterator it = sorted_stats.begin(); it != sorted_stats.end();
          ++it) {

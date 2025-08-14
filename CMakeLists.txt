@@ -17,6 +17,7 @@ set(SOURCES
         ${SRC_DIR}/ethernet_parser.cpp
         ${SRC_DIR}/ip_packet_manager.cpp
         ${SRC_DIR}/ethernet_parser.cpp
+        ${SRC_DIR}/benchmarks.cpp
 )
 
 set(HEADERS
