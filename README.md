@@ -56,7 +56,7 @@ cd /d \Pcap_parser
 #### 3. Соберите проект командой
 
 ```bash
-cl /EHsc src\main.cpp src\pcap_reader.cpp src\ethernet_parser.cpp src\ip_packet_manager.cpp /Iinclude /FePcapParser.exe
+cl /EHsc src\main.cpp src\pcap_reader.cpp src\ethernet_parser.cpp src\ip_packet_manager.cpp src\benchmarks.cpp /Iinclude /FePcapParser.exe
 ```
 
 #### 4. Включите русский язык в терминале

@@ -34,11 +34,13 @@ long long benchmark_std_sort(const std::map<uint32_t, uint32_t> &length_stats)
 
 long long benchmark_multimap(const std::map<uint32_t, uint32_t> &length_stats)
 {
-    steady_clock_t::time_point        start_multimap = steady_clock_t::now();
+    steady_clock_t::time_point start_multimap = steady_clock_t::now();
+
     std::multimap<uint32_t, uint32_t> count_to_length;
     for (auto it = length_stats.begin(); it != length_stats.end(); ++it) {
         count_to_length.insert(std::make_pair(it->second, it->first));
     }
+
     steady_clock_t::time_point end_multimap = steady_clock_t::now();
     return std::chrono::duration_cast<std::chrono::microseconds>(end_multimap - start_multimap).count();
 }
