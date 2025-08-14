@@ -10,7 +10,7 @@
 #include <string>
 
 
-#pragma pack(push,1)
+#pragma pack(push, 1)
 typedef struct EthernetHeader
 {
     uint8_t  dst_mac[pcap_constants::MAC_ADDRESS_SIZE];

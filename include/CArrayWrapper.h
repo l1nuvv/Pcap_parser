@@ -14,12 +14,12 @@ public:
     CArrayWrapper(const CArrayWrapper &)            = delete;
     CArrayWrapper &operator=(const CArrayWrapper &) = delete;
 
-    CArrayWrapper(CArrayWrapper &&other) noexcept : size_(other.size_), data_(other.data_)
+    CArrayWrapper(CArrayWrapper &&other) : size_(other.size_), data_(other.data_)
     {
         other.size_ = 0;
         other.data_ = nullptr;
     }
-    CArrayWrapper &operator=(CArrayWrapper &&other) noexcept
+    CArrayWrapper &operator=(CArrayWrapper &&other)
     {
         if (this != &other) {
             delete[] data_;

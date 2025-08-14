@@ -14,7 +14,6 @@
 
 class ethernet_parser {
 private:
-
     std::map<MacPair, uint64_t> mac_pair_stats;
     std::string                 mac_to_string(const uint8_t *mac) const;
 

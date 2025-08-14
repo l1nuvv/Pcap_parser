@@ -80,8 +80,7 @@ int main(int argc, char *argv[])
     std::cout << "Попытка создания папки: " << result_dir << std::endl;
 
     if (!create_directory(result_dir)) {
-        std::cerr << "Warning: Не удалось создать папку " << result_dir << " (errno: " << errno << " - "
-                  << std::strerror(errno) << ")" << std::endl;
+        std::cerr << "Warning: Не удалось создать папку " << result_dir << " (errno: " << errno << " - " << ")" << std::endl;
         std::cout << "Файлы будут сохранены в текущей директории" << std::endl;
     } else {
         std::cout << "Папка " << result_dir << " создана или уже существует" << std::endl;

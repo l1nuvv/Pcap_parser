@@ -131,45 +131,46 @@ void PcapReader::process_single_packet(const pcaprec_header_t &packet_header, co
 
 void PcapReader::print_length_stats_sort(bool sort_by_count) const
 {
-    using clock = std::chrono::high_resolution_clock;
+    typedef std::chrono::high_resolution_clock clock;
 
     if (!sort_by_count) {
-        for (const auto &pair: length_stats) {
-            std::cout << "Длина пакета " << pair.first << ": количество " << pair.second << std::endl;
+        for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
+            std::cout << "Длина пакета " << it->first << ": количество " << it->second << std::endl;
         }
         return;
     }
 
     std::vector<std::pair<uint32_t, uint32_t>> sorted_stats;
     sorted_stats.reserve(length_stats.size());
-    for (const auto &pair: length_stats) {
-        sorted_stats.emplace_back(pair.first, pair.second);
+    for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
+        sorted_stats.push_back(std::make_pair(it->first, it->second));
     }
 
-    auto start_sort = clock::now();
-    std::sort(sorted_stats.begin(), sorted_stats.end(), [](const auto &a, const auto &b) {
-        if (a.second != b.second) { return a.second < b.second; }
-        return a.first < b.first;
-    });
-    auto end_sort      = clock::now();
-    auto duration_sort = std::chrono::duration_cast<std::chrono::microseconds>(end_sort - start_sort).count();
+    clock::time_point start_sort = clock::now();
+    std::sort(sorted_stats.begin(), sorted_stats.end(),
+              [](const std::pair<uint32_t, uint32_t> &a, const std::pair<uint32_t, uint32_t> &b) {
+                  if (a.second != b.second) { return a.second < b.second; }
+                  return a.first < b.first;
+              });
+    clock::time_point end_sort = clock::now();
+    long long duration_sort    = std::chrono::duration_cast<std::chrono::microseconds>(end_sort - start_sort).count();
 
-    auto                              start_multimap = clock::now();
+    clock::time_point                 start_multimap = clock::now();
     std::multimap<uint32_t, uint32_t> count_to_length;
-    for (const auto &pair: length_stats) {
-        count_to_length.emplace(pair.second, pair.first);
+    for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
+        count_to_length.insert(std::make_pair(it->second, it->first));
     }
-    auto end_multimap      = clock::now();
-    auto duration_multimap = std::chrono::duration_cast<std::chrono::microseconds>(end_multimap - start_multimap)
-                                     .count();
+    clock::time_point end_multimap = clock::now();
+    long long duration_multimap = std::chrono::duration_cast<std::chrono::microseconds>(end_multimap - start_multimap)
+                                          .count();
 
-    // Результаты бенчмарка
     std::cout << "=== БЕНЧМАРК ===" << std::endl;
     std::cout << "std::sort: " << duration_sort << " мкс" << std::endl;
     std::cout << "std::multimap: " << duration_multimap << " мкс" << std::endl << std::endl;
 
-    for (const auto &pair: sorted_stats) {
-        std::cout << "Длина пакета " << pair.first << ": количество " << pair.second << std::endl;
+    for (std::vector<std::pair<uint32_t, uint32_t>>::const_iterator it = sorted_stats.begin(); it != sorted_stats.end();
+         ++it) {
+        std::cout << "Длина пакета " << it->first << ": количество " << it->second << std::endl;
     }
 }
 
