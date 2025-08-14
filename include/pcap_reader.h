@@ -5,6 +5,7 @@
 #include "structs/ethernet_structs.h"
 #include "structs/pcap_structs.h"
 
+#include "benchmarks.h"
 #include "ethernet_parser.h"
 #include "ip_packet_manager.h"
 #include "pcap_constants.h"

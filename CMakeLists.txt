@@ -17,6 +17,8 @@ set(SOURCES
         ${SRC_DIR}/ethernet_parser.cpp
         ${SRC_DIR}/ip_packet_manager.cpp
         ${SRC_DIR}/ethernet_parser.cpp
+        ${SRC_DIR}/benchmarks.cpp
+
 )
 
 set(HEADERS
@@ -27,6 +29,7 @@ set(HEADERS
         ${INCLUDE_DIR}/ip_packet_manager.h
         ${INCLUDE_DIR}/CArrayWrapper.h
         ${INCLUDE_DIR}/pcap_constants.h
+        ${INCLUDE_DIR}/benchmarks.h
 )
 
 add_executable(Pcap_parser ${SOURCES} ${HEADERS})

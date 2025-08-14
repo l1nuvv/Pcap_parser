@@ -140,42 +140,8 @@ void PcapReader::print_length_stats_sort(bool sort_by_count) const
         return;
     }
 
-    // Бенчмарк std::sort
-    clock::time_point start_sort;
-    clock::time_point end_sort;
-    long long         duration_sort = 0;
-    const int         trials        = 50;
-
-    for (int t = 0; t < trials; ++t) {
-        std::vector<std::pair<uint32_t, uint32_t>> temp;
-        temp.reserve(length_stats.size());
-        for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
-            temp.push_back(std::make_pair(it->first, it->second));
-        }
-
-        std::random_shuffle(temp.begin(), temp.end());
-
-        start_sort = clock::now();
-        std::sort(temp.begin(), temp.end(),
-                  [](const std::pair<uint32_t, uint32_t> &a, const std::pair<uint32_t, uint32_t> &b) {
-                      if (a.second != b.second) { return a.second < b.second; }
-                      return a.first < b.first;
-                  });
-        end_sort = clock::now();
-        duration_sort += std::chrono::duration_cast<std::chrono::microseconds>(end_sort - start_sort).count();
-    }
-
-    long long avg_sort_time = duration_sort / trials;
-
-    // Бенчмарк std::multimap
-    clock::time_point                 start_multimap = clock::now();
-    std::multimap<uint32_t, uint32_t> count_to_length;
-    for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
-        count_to_length.insert(std::make_pair(it->second, it->first));
-    }
-    clock::time_point end_multimap = clock::now();
-    long long duration_multimap = std::chrono::duration_cast<std::chrono::microseconds>(end_multimap - start_multimap)
-                                          .count();
+    long long avg_sort_time     = benchmark_std_sort(length_stats); // Бенчмарк std::sort
+    long long duration_multimap = benchmark_multimap(length_stats); // Бенчмарк std::multimap
 
     // Вывод бенчмарка
     std::cout << "=== БЕНЧМАРК ===" << std::endl;
