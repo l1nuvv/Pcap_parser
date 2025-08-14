@@ -131,7 +131,7 @@ void PcapReader::process_single_packet(const pcaprec_header_t &packet_header, co
 
 void PcapReader::print_length_stats_sort(bool sort_by_count) const
 {
-    typedef std::chrono::high_resolution_clock clock;
+    typedef std::chrono::steady_clock clock;
 
     if (!sort_by_count) {
         for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
