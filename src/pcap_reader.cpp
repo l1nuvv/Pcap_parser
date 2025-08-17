@@ -130,8 +130,6 @@ void PcapReader::process_single_packet(const pcaprec_header_t &packet_header, co
 
 void PcapReader::print_length_stats_sort(bool sort_by_count) const
 {
-    typedef std::chrono::steady_clock clock;
-
     if (!sort_by_count) {
         for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
             std::cout << "Длина пакета " << it->first << ": количество " << it->second << std::endl;
@@ -150,8 +148,8 @@ void PcapReader::print_length_stats_sort(bool sort_by_count) const
     // Вывод результата сортировки
     std::vector<std::pair<uint32_t, uint32_t>> sorted_stats;
     sorted_stats.reserve(length_stats.size());
-    for (std::map<uint32_t, uint32_t>::const_iterator it = length_stats.begin(); it != length_stats.end(); ++it) {
-        sorted_stats.push_back(std::make_pair(it->first, it->second));
+    for (auto length_stat: length_stats) {
+        sorted_stats.emplace_back(length_stat.first, length_stat.second);
     }
 
     std::sort(sorted_stats.begin(), sorted_stats.end(),
@@ -160,9 +158,8 @@ void PcapReader::print_length_stats_sort(bool sort_by_count) const
                   return a.first < b.first;
               });
 
-    for (std::vector<std::pair<uint32_t, uint32_t>>::const_iterator it = sorted_stats.begin(); it != sorted_stats.end();
-         ++it) {
-        std::cout << "Длина пакета " << it->first << ": количество " << it->second << std::endl;
+    for (auto sorted_stat: sorted_stats) {
+        std::cout << "Длина пакета " << sorted_stat.first << ": количество " << sorted_stat.second << std::endl;
     }
 }
 

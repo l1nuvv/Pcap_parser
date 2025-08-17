@@ -4,7 +4,7 @@
 #ifndef PCAP_STRUCTS_H
 #define PCAP_STRUCTS_H
 
-#pragma once
+#include "pcap_constants.h"
 
 #include <cstdint>
 

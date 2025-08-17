@@ -6,6 +6,9 @@
 #define ETHERNET_STRUCTS_H
 
 #include "pcap_constants.h"
+
+#include <cstddef>
+#include <cstdint>
 #include <string>
 
 #pragma pack(push, 1)

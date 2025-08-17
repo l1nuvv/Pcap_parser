@@ -15,7 +15,6 @@
 class PcapReader {
 private:
     std::shared_ptr<CArrayWrapper<uint8_t>> buffer;
-    size_t                                  buffer_pos  = 0;
     size_t                                  buffer_size = 0;
     pcap_header_t                           global_header;
     uint32_t                                packet_count;
