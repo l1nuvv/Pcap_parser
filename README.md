@@ -71,15 +71,34 @@ chcp 65001
 PcapParser.exe traffic.pcap
 ```
 
-## Использование
+## Режимы сборки (Debug / Release)
 
-### Основная команда
+По умолчанию CMake собирает проект в `Debug`.  
+Чтобы явно указать режим:
+
+### Linux
 
 ```bash
-./Pcap_parser <путь_к_pcap_файлу>
+# Debug
+cmake -DCMAKE_BUILD_TYPE=Debug ..
+cmake --build .
+
+# Release
+cmake -DCMAKE_BUILD_TYPE=Release ..
+cmake --build .
 ```
 
-### Примеры
+### Windows
+
+```bash
+# Debug
+cmake --build . --config Debug
+
+# Release
+cmake --build . --config Release
+```
+
+### Запуск
 
 ```bash
 # Парсер .pcap файла
@@ -148,26 +167,6 @@ aa:bb:cc:dd:ee:ff -> 11:22:33:44:55:66: 450
 === СОЗДАНИЕ ВЫХОДНЫХ ФАЙЛОВ ===
 IPv4 пакеты успешно сохранены в result/ipv4_packets.pack2
 IPv6 пакеты успешно сохранены в result/ipv6_packets.pack4
-```
-
-## Тестирование
-
-Если установлен Google Test:
-
-```bash
-# Сборка с тестами
-mkdir build
-cd build
-cmake -DBUILD_TESTS=ON ..
-
-#Linux
-make
-ls pcap_tests
-make test
-
-# Windows
-cmake --build . --config Debug
-ctest --verbose
 ```
 
 ## Ограничения
