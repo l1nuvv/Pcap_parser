@@ -1,46 +1,58 @@
 #include "benchmarks.h"
 
-
-using steady_clock_t = std::chrono::steady_clock;
+#include <algorithm>
+#include <random>
+#include <vector>
 
 long long benchmark_std_sort(const std::map<uint32_t, uint32_t> &length_stats)
 {
-    steady_clock_t::time_point start_sort;
-    steady_clock_t::time_point end_sort;
-    long long                  duration_sort = 0;
-    const int                  trials        = 50;
+    long long duration_sort = 0;
 
-    for (int t = 0; t < trials; ++t) {
+
+    std::mt19937 rng(123456789);
+    for (int t = 0; t < pcap_constants::TRIALS; ++t) {
         std::vector<std::pair<uint32_t, uint32_t>> temp;
         temp.reserve(length_stats.size());
-        for (auto it = length_stats.begin(); it != length_stats.end(); ++it) {
-            temp.push_back(std::make_pair(it->first, it->second));
+        for (auto length_stat: length_stats) {
+            temp.emplace_back(length_stat.first, length_stat.second);
         }
+        std::shuffle(temp.begin(), temp.end(), rng);
 
-        std::random_shuffle(temp.begin(), temp.end());
-
-        start_sort = steady_clock_t::now();
+        auto start_sort = steady_clock_t::now();
         std::sort(temp.begin(), temp.end(),
                   [](const std::pair<uint32_t, uint32_t> &a, const std::pair<uint32_t, uint32_t> &b) {
-                      if (a.second != b.second) { return a.second < b.second; }
+                      if (a.second != b.second) return a.second < b.second;
                       return a.first < b.first;
                   });
-        end_sort = steady_clock_t::now();
+        auto end_sort = steady_clock_t::now();
+
         duration_sort += std::chrono::duration_cast<std::chrono::microseconds>(end_sort - start_sort).count();
     }
 
-    return duration_sort / trials;
+    return duration_sort / pcap_constants::TRIALS;
 }
 
 long long benchmark_multimap(const std::map<uint32_t, uint32_t> &length_stats)
 {
-    steady_clock_t::time_point start_multimap = steady_clock_t::now();
+    long long total_us = 0;
 
-    std::multimap<uint32_t, uint32_t> count_to_length;
-    for (auto it = length_stats.begin(); it != length_stats.end(); ++it) {
-        count_to_length.insert(std::make_pair(it->second, it->first));
+    if (length_stats.empty()) { return 0; }
+
+    for (int t = 0; t < pcap_constants::TRIALS; ++t) {
+        auto                                                  start = steady_clock_t::now();
+        std::multimap<std::pair<uint32_t, uint32_t>, uint8_t> mm;
+
+        for (auto length_stat: length_stats) {
+            mm.emplace(std::make_pair(length_stat.second, length_stat.first), 0);
+        }
+
+        auto end = steady_clock_t::now();
+        total_us += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+
+        volatile uint32_t sink = 0;
+        sink += static_cast<uint32_t>(mm.size());
+        (void) sink;
     }
 
-    steady_clock_t::time_point end_multimap = steady_clock_t::now();
-    return std::chrono::duration_cast<std::chrono::microseconds>(end_multimap - start_multimap).count();
+    return total_us / pcap_constants::TRIALS;
 }

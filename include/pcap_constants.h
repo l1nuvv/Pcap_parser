@@ -32,6 +32,9 @@ namespace pcap_constants {
     static const size_t IPV4_DST_ADDR_OFFSET = 16;
     static const size_t IPV6_SRC_ADDR_OFFSET = 8;
     static const size_t IPV6_DST_ADDR_OFFSET = 24;
+
+    // Бенчмарки
+    static const size_t TRIALS = 50;
 } // namespace pcap_constants
 
 #endif //PCAP_CONSTANTS_H

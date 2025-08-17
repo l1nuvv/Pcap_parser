@@ -10,14 +10,7 @@
 #include "ip_packet_manager.h"
 #include "pcap_constants.h"
 
-#include <algorithm>
-#include <fstream>
-#include <iomanip>
-#include <iostream>
-#include <map>
-#include <sstream>
-#include <string>
-#include <vector>
+#include <memory>
 
 class PcapReader {
 private:

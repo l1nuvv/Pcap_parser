@@ -1,10 +1,8 @@
 #ifndef PCAP_PARSER_CARRAYWRAPPER_H
 #define PCAP_PARSER_CARRAYWRAPPER_H
 
-#include <algorithm>
-#include <cstddef>
-#include <memory>
-#include <stdexcept>
+#include <cstddef>   // std::size_t
+#include <stdexcept> // std::out_of_range
 
 template<typename T>
 class CArrayWrapper {
@@ -65,5 +63,4 @@ private:
     std::size_t size_ {0};
     T          *data_ {nullptr};
 };
-
 #endif // PCAP_PARSER_CARRAYWRAPPER_H

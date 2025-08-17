@@ -6,9 +6,7 @@
 #define ETHERNET_STRUCTS_H
 
 #include "pcap_constants.h"
-#include <cstdint>
 #include <string>
-
 
 #pragma pack(push, 1)
 typedef struct EthernetHeader

@@ -6,10 +6,7 @@
 #define PCAP_PARSER_ETHERNETPARSER_H
 
 #include "structs/ethernet_structs.h"
-#include <iomanip>
-#include <iostream>
 #include <map>
-#include <sstream>
 #include <string>
 
 class ethernet_parser {

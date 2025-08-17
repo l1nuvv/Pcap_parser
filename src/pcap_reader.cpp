@@ -3,8 +3,7 @@
 //
 
 #include "pcap_reader.h"
-
-#include <chrono>
+#include <algorithm>
 
 
 bool PcapReader::open(const std::string &filename)

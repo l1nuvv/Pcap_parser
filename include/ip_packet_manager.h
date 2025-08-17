@@ -7,8 +7,6 @@
 
 #include "pcap_constants.h"
 
-#include <algorithm>
-#include <cstdint>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
