@@ -14,7 +14,7 @@ bool PcapReader::open(const std::string &filename)
         return false;
     }
     std::streamsize size = file.tellg();
-    if (size < sizeof(pcap_header_t)) {
+    if (size < 0 || static_cast<std::size_t>(size) < sizeof(pcap_header_t)) {
         std::cerr << "Error: файл слишком мал для pcap header" << std::endl;
         return false;
     }

@@ -53,22 +53,24 @@ cmake --build .
 cd /d \Pcap_parser
 ```
 
-#### 3. Соберите проект командой
+#### 3. Сборка в Debug
 
 ```bash
-cl /EHsc src\main.cpp src\pcap_reader.cpp src\ethernet_parser.cpp src\ip_packet_manager.cpp src\benchmarks.cpp /Iinclude /FePcapParser.exe
+cl /EHsc /Od /Zi src\main.cpp src\pcap_reader.cpp src\ethernet_parser.cpp src\ip_packet_manager.cpp src\benchmarks.cpp /Iinclude /FePcapParser_Debug.exe
 ```
 
-#### 4. Включите русский язык в терминале
+#### 4. Сборка в Release
 
 ```bash
-chcp 65001
+cl /EHsc /O2 /DNDEBUG src\main.cpp src\pcap_reader.cpp src\ethernet_parser.cpp src\ip_packet_manager.cpp src\benchmarks.cpp /Iinclude /FePcapParser_Release.exe
 ```
 
 #### 5. Запустите программу
 
 ```bash
-PcapParser.exe traffic.pcap
+PcapParser_Debug.exe traffic.pcap
+PcapParser_Release.exe traffic.pcap
+
 ```
 
 ## Режимы сборки (Debug / Release)
@@ -86,21 +88,8 @@ cmake --build .
 # Release
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
-```
 
-### Windows
 
-```bash
-# Debug
-cmake --build . --config Debug
-
-# Release
-cmake --build . --config Release
-```
-
-### Запуск
-
-```bash
 # Парсер .pcap файла
 ./Pcap_parser ../traffic.pcap
 ```
