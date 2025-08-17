@@ -80,7 +80,8 @@ int main(int argc, char *argv[])
     std::cout << "Попытка создания папки: " << result_dir << std::endl;
 
     if (!create_directory(result_dir)) {
-        std::cerr << "Warning: Не удалось создать папку " << result_dir << " (errno: " << errno << " - " << ")" << std::endl;
+        std::cerr << "Warning: Не удалось создать папку " << result_dir << " (errno: " << errno << " - " << ")"
+                  << std::endl;
         std::cout << "Файлы будут сохранены в текущей директории" << std::endl;
     } else {
         std::cout << "Папка " << result_dir << " создана или уже существует" << std::endl;
@@ -101,11 +102,17 @@ int main(int argc, char *argv[])
     bool ipv4_saved = reader.save_ipv4_packets(ipv4_filename);
     bool ipv6_saved = reader.save_ipv6_packets(ipv6_filename);
 
+#if defined(NDEBUG)
+    const char *build_cfg = "Release";
+#else
+    const char *build_cfg = "Debug";
+#endif
+
     if (ipv4_saved && ipv6_saved) {
-        std::cout << "\nВсе выходные файлы созданы по пути: cmake-build-debug\\result\\" << std::endl;
-        std::cout << "IPv4 пакеты сохранены в " << ipv4_filename << std::endl;
-        std::cout << "IPv6 пакеты сохранены в " << ipv6_filename << std::endl;
+        std::cout << "\nСборка: " << build_cfg << '\n';
+        std::cout << "Все выходные файлы созданы!\n";
     }
+
     PressAnyKey();
     return 0;
 }
