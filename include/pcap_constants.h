@@ -5,8 +5,8 @@
 #ifndef PCAP_CONSTANTS_H
 #define PCAP_CONSTANTS_H
 
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 
 namespace pcap_constants {
     // PCAP файл константы
@@ -35,7 +35,8 @@ namespace pcap_constants {
     static const size_t IPV6_DST_ADDR_OFFSET = 24;
 
     // Бенчмарки
-    static const int TRIALS = 50;
+    static const int TRIALS = 100;
+
 } // namespace pcap_constants
 
 #endif //PCAP_CONSTANTS_H
