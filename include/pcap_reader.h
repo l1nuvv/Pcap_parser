@@ -27,14 +27,14 @@ private:
     ethernet_parser   ethernet_parser_obj;
     ip_packet_manager ip_packet_manager_obj;
 
-    void process_single_packet(const pcaprec_header_t &packet_header, const uint8_t *packet_data);
+    void process_single_packet(const pcaprec_header_t& packet_header, const uint8_t* packet_data);
     void print_length_stats_sort(bool sort_by_count) const;
 
 public:
     PcapReader() : packet_count(0), ipv4_count(0), ipv6_count(0) {};
     ~PcapReader() = default;
 
-    bool     open(const std::string &filename);
+    bool     open(const std::string& filename);
     uint32_t read_and_analyze_packets();
     uint32_t get_linktype() const;
 
@@ -47,12 +47,12 @@ public:
     void print_ipv4_packet_list() const;
     void print_ipv6_packet_list() const;
 
-    bool save_ipv4_packets(const std::string &filename) const;
-    bool save_ipv6_packets(const std::string &filename) const;
+    bool save_ipv4_packets(const std::string& filename) const;
+    bool save_ipv6_packets(const std::string& filename) const;
 
 
-    PcapReader(const PcapReader &)            = delete;
-    PcapReader &operator=(const PcapReader &) = delete;
+    PcapReader(const PcapReader&)            = delete;
+    PcapReader& operator=(const PcapReader&) = delete;
 };
 
 #endif // PCAP_READER_H

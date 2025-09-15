@@ -1,73 +1,132 @@
-# Generated from CLion C/C++ Code Style settings
+# =============================================================================
+# BASIC SETTINGS
+# =============================================================================
+Language: Cpp
 BasedOnStyle: LLVM
+ColumnLimit: 120
+IndentWidth: 4
+ContinuationIndentWidth: 4
+TabWidth: 4
+InsertNewlineAtEOF: true
+MaxEmptyLinesToKeep: 2
+
+# =============================================================================
+# INDENTATION AND ALIGNMENT
+# =============================================================================
 AccessModifierOffset: -4
-AlignAfterOpenBracket: Align
+IndentCaseLabels: true
+NamespaceIndentation: All
 AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
-AlignConsecutiveMacros: true
-AlignOperands: Align
-AllowAllArgumentsOnNextLine: false
-AllowAllConstructorInitializersOnNextLine: false
-AllowAllParametersOfDeclarationOnNextLine: false
+AlignOperands: true
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 2
+
+# =============================================================================
+# SHORT CONSTRUCTS
+# =============================================================================
 AllowShortBlocksOnASingleLine: Always
-AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: Empty
-AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortLambdasOnASingleLine: All
-AllowShortLoopsOnASingleLine: false
-AlwaysBreakAfterReturnType: None
-AlwaysBreakTemplateDeclarations: Yes
+AllowShortCaseLabelsOnASingleLine: true
+
+# =============================================================================
+# POINTERS AND REFERENCES
+# =============================================================================
+DerivePointerAlignment: false
+PointerAlignment: Left
+ReferenceAlignment: Left
+
+# =============================================================================
+# BRACES
+# =============================================================================
 BreakBeforeBraces: Custom
 BraceWrapping:
-  AfterCaseLabel: false
+  AfterCaseLabel: true
   AfterClass: false
-  AfterControlStatement: Never
+  AfterControlStatement: true
   AfterEnum: false
   AfterFunction: true
-  AfterNamespace: false
-  AfterStruct: true
+  AfterNamespace: true
+  AfterStruct: false
   AfterUnion: false
+  AfterExternBlock: false
   BeforeCatch: false
   BeforeElse: false
+  BeforeLambdaBody: false
+  BeforeWhile: false
   IndentBraces: false
-  SplitEmptyFunction: false
+  SplitEmptyFunction: true
   SplitEmptyRecord: true
-BreakBeforeBinaryOperators: None
-BreakBeforeTernaryOperators: true
+  SplitEmptyNamespace: true
+
+# =============================================================================
+# FUNCTION ARGUMENTS AND CONSTRUCTORS
+# =============================================================================
+BinPackArguments: false
+BinPackParameters: false
+AllowAllArgumentsOnNextLine: true
+AllowAllParametersOfDeclarationOnNextLine: true
 BreakConstructorInitializers: AfterColon
-BreakInheritanceList: AfterColon
-ColumnLimit: 120
-CompactNamespaces: false
-ContinuationIndentWidth: 8
-IndentCaseLabels: true
-IndentWidth: 4
-KeepEmptyLinesAtTheStartOfBlocks: false
-AlignArrayOfStructures: Left
-MaxEmptyLinesToKeep: 2
-NamespaceIndentation: All
-ObjCSpaceAfterProperty: false
-ObjCSpaceBeforeProtocolList: true
-PointerAlignment: Right
-ReflowComments: false
+BreakConstructorInitializersBeforeComma: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
+AlwaysBreakTemplateDeclarations: Yes
+Cpp11BracedListStyle: true
+
+# =============================================================================
+# LINE BREAKS
+# =============================================================================
+BreakBeforeBinaryOperators: NonAssignment
+BreakBeforeTernaryOperators: true
+BreakStringLiterals: true
+
+# =============================================================================
+# INITIALIZERS
+# =============================================================================
+BreakBeforeInheritanceComma: false
+BreakInheritanceList: BeforeColon
+
+# =============================================================================
+# INCLUDES
+# =============================================================================
+SortIncludes: CaseSensitive
+SortUsingDeclarations: true
+IncludeCategories:
+  - Regex: '^<.*'
+    Priority: 1
+  - Regex: '^".*'
+    Priority: 2
+  - Regex: '.*'
+    Priority: 3
+IncludeIsMainRegex: '([-_](test|unittest))?$'
+
+# =============================================================================
+# SPACES
+# =============================================================================
 SpaceAfterCStyleCast: true
-SpaceAfterLogicalNot: false
 SpaceAfterTemplateKeyword: false
-SpaceBeforeAssignmentOperators: true
-SpaceBeforeCpp11BracedList: true
-SpaceBeforeCtorInitializerColon: true
-SpaceBeforeInheritanceColon: false
-SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: false
 SpaceInEmptyParentheses: false
-SpacesBeforeTrailingComments: 1
 SpacesInAngles: false
+SpacesInConditionalStatement: false
 SpacesInCStyleCastParentheses: false
-SpacesInContainerLiterals: false
 SpacesInParentheses: false
-SpacesInSquareBrackets: false
-TabWidth: 4
-UseTab: Never
-AlignTrailingComments: true
+SpaceBeforeAssignmentOperators: true
+SpaceAfterLogicalNot: false
+
+# =============================================================================
+# COMMENT HANDLING
+# =============================================================================
+PenaltyBreakComment: 100
+
+# =============================================================================
+# ADDITIONAL USEFUL OPTIONS
+# =============================================================================
+FixNamespaceComments: true
 IndentPPDirectives: None
-PenaltyBreakAssignment: 1000
-PenaltyBreakBeforeFirstCallParameter: 1000
+KeepEmptyLinesAtTheStartOfBlocks: false
+ReflowComments: true
+SeparateDefinitionBlocks: Leave
+Standard: c++20

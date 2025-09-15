@@ -8,7 +8,8 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace pcap_constants {
+namespace pcap_constants
+{
     // PCAP файл константы
     static const uint32_t PCAP_MAGIC_NUMBER   = 0xa1b2c3d4;
     static const uint32_t PCAP_R_MAGIC_NUMBER = 0xd4c3b2a1;
@@ -39,4 +40,4 @@ namespace pcap_constants {
 
 } // namespace pcap_constants
 
-#endif //PCAP_CONSTANTS_H
+#endif // PCAP_CONSTANTS_H

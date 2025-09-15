@@ -5,21 +5,21 @@
 #ifndef PCAP_PARSER_ETHERNETPARSER_H
 #define PCAP_PARSER_ETHERNETPARSER_H
 
-#include "structs/ethernet_structs.h"
 #include <map>
 #include <string>
+#include "structs/ethernet_structs.h"
 
 class ethernet_parser {
 private:
     std::map<MacPair, uint64_t> mac_pair_stats;
-    std::string                 mac_to_string(const uint8_t *mac) const;
+    std::string                 mac_to_string(const uint8_t* mac) const;
 
 public:
     ethernet_parser()  = default;
     ~ethernet_parser() = default;
 
-    void analyze_ethernet_header(const uint8_t *ethernet_data, size_t length);
+    void analyze_ethernet_header(const uint8_t* ethernet_data, size_t length);
     void print_mac_pair_stats() const;
 };
 
-#endif //PCAP_PARSER_ETHERNETPARSER_H
+#endif // PCAP_PARSER_ETHERNETPARSER_H

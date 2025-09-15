@@ -11,8 +11,7 @@
 #pragma pack(push, 1)
 
 // Глобальный заголовок pcap-файла
-typedef struct PCAPGlobalHeader
-{
+typedef struct PCAPGlobalHeader {
     uint32_t magic_number  = pcap_constants::ETHERNET_HEADER_SIZE; // сигнатура (magic number)
     uint16_t version_major = 2;                                    // основная (major) версия по умолчанию 2
     uint16_t version_minor = 4;                                    // дополнительная (minor) версия по умолчанию 4
@@ -23,8 +22,7 @@ typedef struct PCAPGlobalHeader
 } pcap_header_t;
 
 // Заголовок записи (пакета) в pcap-файле
-typedef struct PCAPRecordHeader
-{
+typedef struct PCAPRecordHeader {
     uint32_t ts_sec;   // секунды метки времени (timestamp)
     uint32_t ts_usec;  // микросекунды метки времени
     uint32_t incl_len; // количество байт данных пакета, сохранённых в файле
@@ -33,4 +31,4 @@ typedef struct PCAPRecordHeader
 
 #pragma pack(pop)
 
-#endif //PCAP_STRUCTS_H
+#endif // PCAP_STRUCTS_H

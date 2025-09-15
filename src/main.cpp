@@ -14,7 +14,7 @@
 #include <sys/types.h>
 #endif
 
-bool create_directory(const std::string &path)
+bool create_directory(const std::string& path)
 {
 #ifdef _WIN32
     int result = _mkdir(path.c_str());
@@ -31,7 +31,7 @@ void PressAnyKey()
     std::cin.get();
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
 #ifdef _WIN32
     SetConsoleOutputCP(CP_UTF8);
@@ -40,7 +40,8 @@ int main(int argc, char *argv[])
 #endif
     std::cout << "=== PCAP PARSER ===" << std::endl;
 
-    if (argc != 2) {
+    if (argc != 2)
+    {
         std::cout << "\nИспользуем: " << argv[0] << " <pcap_file>" << std::endl;
         std::cout << "\nПодсказка: напишите путь до pcap файла" << std::endl;
         PressAnyKey();
@@ -53,7 +54,8 @@ int main(int argc, char *argv[])
     // Создаем объект класса
     PcapReader reader;
 
-    if (!reader.open(pcap_file)) {
+    if (!reader.open(pcap_file))
+    {
         std::cout << "Error: не получается открыть pcap файл!" << std::endl;
         std::cout << "Убедитесь, что файл существует и он .pcap" << std::endl;
         PressAnyKey();
@@ -79,7 +81,8 @@ int main(int argc, char *argv[])
     const std::string result_dir = "result";
     std::cout << "Попытка создания папки: " << result_dir << std::endl;
 
-    if (!create_directory(result_dir)) {
+    if (!create_directory(result_dir))
+    {
         std::cerr << "Warning: Не удалось создать папку " << result_dir << " (errno: " << errno << " - " << ")"
                   << std::endl;
         std::cout << "Файлы будут сохранены в текущей директории" << std::endl;
@@ -103,12 +106,13 @@ int main(int argc, char *argv[])
     bool ipv6_saved = reader.save_ipv6_packets(ipv6_filename);
 
 #if defined(NDEBUG)
-    const char *build_cfg = "Release";
+    const char* build_cfg = "Release";
 #else
-    const char *build_cfg = "Debug";
+    const char* build_cfg = "Debug";
 #endif
 
-    if (ipv4_saved && ipv6_saved) {
+    if (ipv4_saved && ipv6_saved)
+    {
         std::cout << "\nСборка: " << build_cfg << '\n';
         std::cout << "Все выходные файлы созданы!\n";
     }
