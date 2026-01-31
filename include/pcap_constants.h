@@ -15,17 +15,17 @@ namespace pcap_constants
     static const uint32_t PCAP_R_MAGIC_NUMBER = 0xd4c3b2a1;
 
     // Ethernet константы
-    static const size_t   ETHERNET_HEADER_SIZE = 14;
-    static const size_t   MAC_ADDRESS_SIZE     = 6;
-    static const uint16_t IPV4_ETHERTYPE       = 0x0800;
-    static const uint16_t IPV6_ETHERTYPE       = 0x86DD;
+    static const size_t ETHERNET_HEADER_SIZE = 14;
+    static const size_t MAC_ADDRESS_SIZE     = 6;
+    static const uint16_t IPV4_ETHERTYPE     = 0x0800;
+    static const uint16_t IPV6_ETHERTYPE     = 0x86DD;
 
     // IP заголовки минимальные размеры
     static const size_t IPV4_HEADER_MIN_SIZE = 20;
     static const size_t IPV6_HEADER_SIZE     = 40;
 
     // Общие ограничения
-    static const size_t   MAX_PACKET_SIZE = 65535;
+    static const size_t MAX_PACKET_SIZE   = 65535;
     static const uint32_t DEFAULT_SNAPLEN = 65535;
 
     // Смещения в байтах
@@ -37,7 +37,6 @@ namespace pcap_constants
 
     // Бенчмарки
     static const int TRIALS = 100;
-
 } // namespace pcap_constants
 
 #endif // PCAP_CONSTANTS_H

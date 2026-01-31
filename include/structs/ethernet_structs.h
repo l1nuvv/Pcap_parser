@@ -13,8 +13,8 @@
 
 #pragma pack(push, 1)
 typedef struct EthernetHeader {
-    uint8_t  dst_mac[pcap_constants::MAC_ADDRESS_SIZE];
-    uint8_t  src_mac[pcap_constants::MAC_ADDRESS_SIZE];
+    uint8_t dst_mac[pcap_constants::MAC_ADDRESS_SIZE];
+    uint8_t src_mac[pcap_constants::MAC_ADDRESS_SIZE];
     uint16_t ethertype;
 } ethernet_header_t;
 #pragma pack(pop)
@@ -28,7 +28,10 @@ struct MacPair {
 
     bool operator<(const MacPair& other) const
     {
-        if (src_mac != other.src_mac) { return src_mac < other.src_mac; }
+        if (src_mac != other.src_mac)
+        {
+            return src_mac < other.src_mac;
+        }
         return dst_mac < other.dst_mac;
     }
 };

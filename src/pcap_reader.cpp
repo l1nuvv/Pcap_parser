@@ -23,7 +23,7 @@ bool PcapReader::open(const std::string& filename)
     file.seekg(0, std::ios::beg);
 
     buffer_size = static_cast<size_t>(size);
-    buffer      = std::make_shared<CArrayWrapper<uint8_t>>(buffer_size);
+    buffer      = std::make_shared<CArrayWrapper<uint8_t> >(buffer_size);
 
     if (!file.read(reinterpret_cast<char*>(buffer->raw_data()), size))
     {
@@ -82,7 +82,10 @@ bool PcapReader::open(const std::string& filename)
     return true;
 }*/
 
-uint32_t PcapReader::get_linktype() const { return global_header.network; }
+uint32_t PcapReader::get_linktype() const
+{
+    return global_header.network;
+}
 
 uint32_t PcapReader::read_and_analyze_packets()
 {
@@ -92,13 +95,13 @@ uint32_t PcapReader::read_and_analyze_packets()
         return 0;
     }
 
-    size_t         offset = sizeof(pcap_header_t);
-    const uint8_t* base   = buffer->raw_data();
+    size_t offset       = sizeof(pcap_header_t);
+    const uint8_t* base = buffer->raw_data();
 
     while (offset + sizeof(pcaprec_header_t) <= buffer_size)
     {
-        const auto*      packet_header_ptr = reinterpret_cast<const pcaprec_header_t*>(base + offset);
-        pcaprec_header_t packet_header     = *packet_header_ptr;
+        const auto* packet_header_ptr  = reinterpret_cast<const pcaprec_header_t*>(base + offset);
+        pcaprec_header_t packet_header = *packet_header_ptr;
 
         offset += sizeof(pcaprec_header_t);
 
@@ -126,8 +129,8 @@ void PcapReader::process_single_packet(const pcaprec_header_t& packet_header, co
     {
         ethernet_parser_obj.analyze_ethernet_header(packet_data, packet_header.incl_len);
         const auto* mac_pair_ethernet_header = reinterpret_cast<const ethernet_header_t*>(packet_data);
-        uint16_t    ethertype_be             = mac_pair_ethernet_header->ethertype;
-        uint16_t    ethertype = static_cast<uint16_t>((ethertype_be >> pcap_constants::ETHERTYPE_BYTE_SHIFT)
+        uint16_t ethertype_be = mac_pair_ethernet_header->ethertype;
+        uint16_t ethertype = static_cast<uint16_t>((ethertype_be >> pcap_constants::ETHERTYPE_BYTE_SHIFT)
                                                    | (ethertype_be << pcap_constants::ETHERTYPE_BYTE_SHIFT));
         ip_packet_manager_obj.extract_ip_packet(packet_data, packet_header.incl_len, ethertype);
     }
@@ -154,7 +157,7 @@ void PcapReader::print_length_stats_sort(bool sort_by_count) const
     std::cout << "std::multimap: " << duration_multimap << " мкс" << std::endl << std::endl;
 
     // Вывод результата сортировки
-    std::vector<std::pair<uint32_t, uint32_t>> sorted_stats;
+    std::vector<std::pair<uint32_t, uint32_t> > sorted_stats;
     sorted_stats.reserve(length_stats.size());
     for (auto length_stat: length_stats)
     {
@@ -164,7 +167,10 @@ void PcapReader::print_length_stats_sort(bool sort_by_count) const
     std::sort(sorted_stats.begin(),
               sorted_stats.end(),
               [](const std::pair<uint32_t, uint32_t>& a, const std::pair<uint32_t, uint32_t>& b) {
-                  if (a.second != b.second) { return a.second < b.second; }
+                  if (a.second != b.second)
+                  {
+                      return a.second < b.second;
+                  }
                   return a.first < b.first;
               });
 
@@ -195,11 +201,20 @@ void PcapReader::print_length_stats_by_count() const
     print_length_stats_sort(true);
 }
 
-void PcapReader::print_mac_pair_stats() const { ethernet_parser_obj.print_mac_pair_stats(); }
+void PcapReader::print_mac_pair_stats() const
+{
+    ethernet_parser_obj.print_mac_pair_stats();
+}
 
-void PcapReader::print_ipv4_packet_list() const { ip_packet_manager_obj.print_ipv4_packet_list(); }
+void PcapReader::print_ipv4_packet_list() const
+{
+    ip_packet_manager_obj.print_ipv4_packet_list();
+}
 
-void PcapReader::print_ipv6_packet_list() const { ip_packet_manager_obj.print_ipv6_packet_list(); }
+void PcapReader::print_ipv6_packet_list() const
+{
+    ip_packet_manager_obj.print_ipv6_packet_list();
+}
 
 bool PcapReader::save_ipv4_packets(const std::string& filename) const
 {

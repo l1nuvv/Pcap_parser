@@ -16,13 +16,10 @@ long long benchmark_std_sort(const std::map<uint32_t, uint32_t>& length_stats)
 
     for (int t = 0; t < pcap_constants::TRIALS; ++t)
     {
-        std::vector<std::pair<uint32_t, uint32_t>> temp;
+        std::vector<std::pair<uint32_t, uint32_t> > temp;
         temp.reserve(length_stats.size());
 
-        for (const auto& length_stat: length_stats)
-        {
-            temp.emplace_back(length_stat.first, length_stat.second);
-        }
+        for (const auto& length_stat: length_stats) { temp.emplace_back(length_stat.first, length_stat.second); }
 
         std::shuffle(temp.begin(), temp.end(), rng);
 
@@ -40,10 +37,7 @@ long long benchmark_std_sort(const std::map<uint32_t, uint32_t>& length_stats)
         duration_sort += std::chrono::duration_cast<std::chrono::microseconds>(end_sort - start_sort).count();
 
         volatile uint64_t sink = 0;
-        for (const auto& p: temp)
-        {
-            sink += p.first + p.second;
-        }
+        for (const auto& p: temp) { sink += p.first + p.second; }
         (void) sink;
     }
 
@@ -72,7 +66,7 @@ long long benchmark_multimap(const std::map<uint32_t, uint32_t>& length_stats)
         total_us += std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 
         volatile uint32_t sink = 0;
-        sink += static_cast<uint32_t>(mm.size());
+        sink                   += static_cast<uint32_t>(mm.size());
         (void) sink;
     }
 

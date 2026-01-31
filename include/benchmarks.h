@@ -12,6 +12,7 @@
 using steady_clock_t = std::chrono::steady_clock;
 
 long long benchmark_std_sort(const std::map<uint32_t, uint32_t>& length_stats);
+
 long long benchmark_multimap(const std::map<uint32_t, uint32_t>& length_stats);
 
 

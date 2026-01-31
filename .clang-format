@@ -10,6 +10,7 @@ TabWidth: 4
 InsertNewlineAtEOF: true
 MaxEmptyLinesToKeep: 2
 
+
 # =============================================================================
 # INDENTATION AND ALIGNMENT
 # =============================================================================
@@ -17,20 +18,21 @@ AccessModifierOffset: -4
 IndentCaseLabels: true
 NamespaceIndentation: All
 AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: true
 AlignOperands: true
 AlignTrailingComments:
   Kind: Always
   OverEmptyLines: 2
+AlignConsecutiveDeclarations: false
 
 # =============================================================================
 # SHORT CONSTRUCTS
 # =============================================================================
 AllowShortBlocksOnASingleLine: Always
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: Empty
 AllowShortIfStatementsOnASingleLine: AllIfsAndElse
 AllowShortLambdasOnASingleLine: All
 AllowShortCaseLabelsOnASingleLine: true
+AllowShortEnumsOnASingleLine: false
 
 # =============================================================================
 # POINTERS AND REFERENCES
@@ -58,7 +60,7 @@ BraceWrapping:
   BeforeLambdaBody: false
   BeforeWhile: false
   IndentBraces: false
-  SplitEmptyFunction: true
+  SplitEmptyFunction: false
   SplitEmptyRecord: true
   SplitEmptyNamespace: true
 
@@ -71,7 +73,8 @@ AllowAllArgumentsOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: true
 BreakConstructorInitializers: AfterColon
 BreakConstructorInitializersBeforeComma: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 4
 AlwaysBreakTemplateDeclarations: Yes
 Cpp11BracedListStyle: true
 
@@ -129,4 +132,5 @@ IndentPPDirectives: None
 KeepEmptyLinesAtTheStartOfBlocks: false
 ReflowComments: true
 SeparateDefinitionBlocks: Leave
+SpaceInEmptyBlock: false
 Standard: c++20

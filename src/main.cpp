@@ -25,12 +25,6 @@ bool create_directory(const std::string& path)
 #endif
 }
 
-void PressAnyKey()
-{
-    std::cout << "\nНажмите любую клавишу..." << std::endl;
-    std::cin.get();
-}
-
 int main(int argc, char* argv[])
 {
 #ifdef _WIN32
@@ -44,7 +38,6 @@ int main(int argc, char* argv[])
     {
         std::cout << "\nИспользуем: " << argv[0] << " <pcap_file>" << std::endl;
         std::cout << "\nПодсказка: напишите путь до pcap файла" << std::endl;
-        PressAnyKey();
         return 1;
     }
 
@@ -58,7 +51,6 @@ int main(int argc, char* argv[])
     {
         std::cout << "Error: не получается открыть pcap файл!" << std::endl;
         std::cout << "Убедитесь, что файл существует и он .pcap" << std::endl;
-        PressAnyKey();
         return 1;
     }
 
@@ -84,9 +76,10 @@ int main(int argc, char* argv[])
     if (!create_directory(result_dir))
     {
         std::cerr << "Warning: Не удалось создать папку " << result_dir << " (errno: " << errno << " - " << ")"
-                  << std::endl;
+            << std::endl;
         std::cout << "Файлы будут сохранены в текущей директории" << std::endl;
-    } else {
+    } else
+    {
         std::cout << "Папка " << result_dir << " создана или уже существует" << std::endl;
     }
 
@@ -111,12 +104,5 @@ int main(int argc, char* argv[])
     const char* build_cfg = "Debug";
 #endif
 
-    if (ipv4_saved && ipv6_saved)
-    {
-        std::cout << "\nСборка: " << build_cfg << '\n';
-        std::cout << "Все выходные файлы созданы!\n";
-    }
-
-    PressAnyKey();
     return 0;
 }

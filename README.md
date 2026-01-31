@@ -1,164 +1,90 @@
 # PCAP Parser
 
-Кроссплатформенное консольное приложение для анализа сетевого трафика в формате PCAP.
+![C++](https://img.shields.io/badge/C%2B%2B-11-blue?style=flat&logo=cplusplus&logoColor=white)
+![CMake](https://img.shields.io/badge/CMake-3.5+-064F8C?style=flat&logo=cmake&logoColor=white)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux-lightgrey?style=flat)
 
-## Требования к системе
+Консольный парсер PCAP-файлов для анализа сетевого трафика.
 
-- **Компилятор**:
-    - Windows: MSVC 120+
-    - Linux: GCC (любой)
-- **Стандарт**: C++11
-- **Система сборки**: CMake 3.5+
-- **Тесты** : Google Test
+## Возможности
 
-## Структура проекта
+- Анализ Ethernet-фреймов (linktype 1)
+- Статистика пакетов по длинам и MAC-адресам
+- Извлечение IPv4/IPv6 пакетов
+- Экспорт в бинарные форматы `.pack2` и `.pack4`
 
-```
-PcapParser/
-├── build/ # Папка для выходных файлов
-├── include/
-│   ├── pcap_reader.h
-│   ├── pcap_structs.h
-│   └── ethernet_structs.h
-├── src/
-│   ├── main.cpp
-│   └── pcap_reader.cpp
-├── tests/
-│   └── test_pcap_reader.cpp          
-├── CMakeLists.txt
-└── README.md
-```
+---
 
-## Сборка проекта
-
-### CMake
+## Сборка и запуск
 
 ```bash
-# Создание папки для сборки
-mkdir build
-cd build
-
-# Конфигурация и сборка
+## Сборка
+mkdir build && cd build
 cmake ..
-cmake --build .
-```
 
-### VS Tools
-
-#### 1.Откройте терминал Developer Command Prompt for VS2013
-
-#### 2. Перейдите в папку с проектом
-
-```bash
-cd /d \Pcap_parser
-```
-
-#### 3. Сборка в Debug
-
-```bash
-cl /EHsc /Od /Zi src\main.cpp src\pcap_reader.cpp src\ethernet_parser.cpp src\ip_packet_manager.cpp src\benchmarks.cpp /Iinclude /FePcapParser_Debug.exe
-```
-
-#### 4. Сборка в Release
-
-```bash
-cl /EHsc /O2 /DNDEBUG src\main.cpp src\pcap_reader.cpp src\ethernet_parser.cpp src\ip_packet_manager.cpp src\benchmarks.cpp /Iinclude /FePcapParser_Release.exe
-```
-
-#### 5. Запустите программу
-
-```bash
-PcapParser_Debug.exe traffic.pcap
-PcapParser_Release.exe traffic.pcap
-
-```
-
-## Режимы сборки (Debug / Release)
-
-По умолчанию CMake собирает проект в `Debug`.  
-Чтобы явно указать режим:
-
-### Linux
-
-```bash
-# Debug
+## Для Debug
 cmake -DCMAKE_BUILD_TYPE=Debug ..
 cmake --build .
 
-# Release
+## Для Release
 cmake -DCMAKE_BUILD_TYPE=Release ..
 cmake --build .
 
 
-# Парсер .pcap файла
-./Pcap_parser ../traffic.pcap
+## Использование
+./Pcap_parser traffic.pcap
 ```
 
-## Функционал
+Программа создаст папку `result/` со следующими файлами:
 
-Приложение выполняет следующие операции:
+- `ipv4_packets.pack2` — IPv4 пакеты  
+  Формат: `[2 байта — размер][данные]`
 
-### 1. Анализ и вывод информации:
+- `ipv6_packets.pack4` — IPv6 пакеты  
+  Формат: `[4 байта — размер][данные]`
 
-- **Linktype** - тип канального уровня (обычно 1 для Ethernet)
-- **Общее количество пакетов** в файле
-- **Статистика длин пакетов**:
-    - В порядке возрастания длин
-    - В порядке возрастания количества
-- **Статистика MAC-адресов** (отправитель → получатель)
-- **Список IPv4 пакетов** с адресами источника и назначения
-- **Список IPv6 пакетов** с адресами источника и назначения
-
-### 2. Создание выходных файлов:
-
-Приложение создает папку `result` в папке `build` и сохраняет в ней:
-
-- **`ipv4_packets.pack2`** - файл с IPv4 пакетами
-    - Формат: `[2 байта размер][IP пакет][2 байта размер][IP пакет]...`
-- **`ipv6_packets.pack4`** - файл с IPv6 пакетами
-    - Формат: `[4 байта размер][IP пакет][4 байта размер][IP пакет]...`
+---
 
 ## Пример вывода
 
-```
+```text
 === PCAP PARSER ===
+Файл: traffic.pcap
 Linktype: 1
-Всего пакетов: 1250
-IPv4 пакетов: 1100
-IPv6 пакетов: 150
+
+Всего пакетов: 22943
+IPv4 пакетов: 22883
+IPv6 пакетов: 1
 
 === СТАТИСТИКА ДЛИН ПАКЕТОВ ===
-В порядке возрастания длин:
-Длина пакета 60: количество 45
-Длина пакета 64: количество 120
-Длина пакета 1514: количество 890
+Наиболее частые размеры:
+1354 байта: 12144 пакетов
+154 байта: 1006 пакетов
+1514 байта: 792 пакета
 
-В порядке возрастания количества:
-Длина пакета 60: количество 45
-Длина пакета 64: количество 120
-Длина пакета 1514: количество 890
+Минимальный размер: 42 байта
+Максимальный размер: 1514 байт
+Уникальных длин: 160+
 
-=== СТАТИСТИКА ПАР MAC ===
-aa:bb:cc:dd:ee:ff -> 11:22:33:44:55:66: 450
-11:22:33:44:55:66 -> aa:bb:cc:dd:ee:ff: 425
+=== БЕНЧМАРК СОРТИРОВКИ ===
+std::sort:      6 мкс
+std::multimap: 11 мкс
 
-=== IPv4 СПИСОК ПАКЕТОВ ===
-Всего IPv4 пакетов: 1100
-Пакет 1: 192.168.1.1 -> 192.168.1.100
-Пакет 2: 10.0.0.1 -> 8.8.8.8
-...
+=== ТОП MAC-ПАР ===
+18:0f:76:1e:6a:1c -> 04:d9:f5:83:c7:c2: 13514
+04:d9:f5:83:c7:c2 -> 18:0f:76:1e:6a:1c: 8548
+18:0f:76:1e:6a:1c -> ff:ff:ff:ff:ff:ff: 13
 
-=== IPv6 СПИСОК ПАКЕТОВ ===
-Всего IPv6 пакетов: 150
-Пакет 1: 2001:0db8:85a3:0000:0000:8a2e:0370:7334 -> fe80:0000:0000:0000:0202:b3ff:fe1e:8329
-...
-
-=== СОЗДАНИЕ ВЫХОДНЫХ ФАЙЛОВ ===
-IPv4 пакеты успешно сохранены в result/ipv4_packets.pack2
-IPv6 пакеты успешно сохранены в result/ipv6_packets.pack4
+=== ВЫХОДНЫЕ ФАЙЛЫ ===
+result/ipv4_packets.pack2
+result/ipv6_packets.pack4
 ```
 
-## Ограничения
+---
 
-- Приложение работает только с Ethernet (linktype = 1)
-- Максимальный размер IPv4 пакета для сохранения: 65535 байт
+## Стек
+
+- C++11
+- GCC 11+/MSVC 120+
+- CMake 3.5
+- Google Test
